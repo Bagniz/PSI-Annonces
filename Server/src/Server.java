@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Serveur {
+public class Server {
 
     static class Connect extends Thread{
 
@@ -45,7 +45,8 @@ public class Serveur {
 
     public static void main(String[] args) {
         try {
-            TimeUnit.SECONDS.sleep(30);
+            System.out.println("Server Started");
+            TimeUnit.SECONDS.sleep(10);
             ServerSocket server = new ServerSocket(8080);
             System.out.println("Serveur marche "+server.getInetAddress());
             AtomicInteger nbrClient =new AtomicInteger(0);

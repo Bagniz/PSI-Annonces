@@ -5,40 +5,67 @@
       <artifact name="Client:jar" />
     </artifacts-to-build>
   </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="286cb722-b8b6-457f-bc7a-3b1712344281" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/Client_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Serveur/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Serveur/.idea/artifacts/Serveur_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Serveur/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Serveur/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Serveur/Serveur.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Client_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Client_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/.idea/aws.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/Server.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/createFunctions.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/createTables.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/createTriggers.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/deleteAll.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/prepareDatabase.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Client.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Client/Ecoute.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Ecoute.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Client/Envoie.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Envoie.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/20createTables.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/30createFunctions.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/40createTriggers.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/deleteAll.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/prepareDatabase.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Docker/commandes.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Jar/Client.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Jar/Serveur.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Jar/configClient.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Jar/configDB.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/.idea/artifacts/Serveur_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/Serveur.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/out/production/Serveur/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/out/production/Serveur/Serveur$Connect.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/out/production/Serveur/Serveur.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/src/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Serveur/src/Serveur.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../rin.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../rin.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../run.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -57,6 +84,9 @@
       </MavenGeneralSettings>
     </option>
   </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
   <component name="ProjectId" id="1iI7GI8LxmteTFp61zCEDE3Typf" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -64,14 +94,15 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="postgresql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Jar" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/postgresql-42.2.18.jar" />
     <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -119,20 +150,46 @@
       <workItem from="1602007399399" duration="4685000" />
       <workItem from="1602873902036" duration="4356000" />
       <workItem from="1603194312571" duration="4305000" />
+      <workItem from="1603226888782" duration="3944000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="WindowStateProjectService">
+    <state x="443" y="116" width="1024" height="839" key="#Project_Structure" timestamp="1603229230645">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="443" y="116" width="1024" height="839" key="#Project_Structure/0.0.1920.1080@0.0.1920.1080" timestamp="1603229230645" />
+    <state x="555" y="200" width="800" height="671" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603228463378">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="555" y="200" width="800" height="671" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1603228463378" />
     <state x="439" y="190" width="525" height="416" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1601583239223">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state x="439" y="190" width="525" height="416" key="#com.intellij.ide.util.TreeClassChooserDialog/67.27.1299.741@67.27.1299.741" timestamp="1601583239223" />
-    <state x="494" y="141" width="424" height="513" key="FileChooserDialogImpl" timestamp="1603196335773">
-      <screen x="67" y="27" width="1299" height="741" />
+    <state x="788" y="273" width="324" height="518" key="#com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditorDialog" timestamp="1603228204877">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
+    <state x="788" y="273" width="324" height="518" key="#com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditorDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1603228204877" />
+    <state x="631" y="166" width="637" height="748" key="FileChooserDialogImpl" timestamp="1603228225124">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="631" y="166" width="637" height="748" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1603228225124" />
     <state x="494" y="141" width="424" height="513" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1603196335773" />
     <state width="1253" height="175" key="GridCell.Tab.0.bottom" timestamp="1603214098957">
       <screen x="67" y="27" width="1299" height="741" />

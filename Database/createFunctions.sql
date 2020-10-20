@@ -1,3 +1,7 @@
+\echo '******** Creating The Database ********'
+
+CREATE DATABASE db_psi;;
+
 \echo '******** Set The Database ********'
 
 \c db_psi

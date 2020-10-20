@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Serveur:jar">
-    <output-path>$PROJECT_DIR$/../PSi/PSI-Annonces/Jar</output-path>
-    <root id="archive" name="Serveur.jar">
-      <element id="module-output" name="Serveur" />
-      <element id="extracted-dir" path="$USER_HOME$/Serveur/lib/postgresql-42.2.18.jre6.jar" path-in-jar="/" />
-    </root>
-  </artifact>
-</component>

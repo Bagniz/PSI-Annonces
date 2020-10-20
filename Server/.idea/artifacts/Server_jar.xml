@@ -1,8 +1,8 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="Client:jar">
+  <artifact type="jar" name="Server:jar">
     <output-path>$PROJECT_DIR$/../app</output-path>
-    <root id="archive" name="Client.jar">
-      <element id="module-output" name="Client" />
+    <root id="archive" name="Server.jar">
+      <element id="module-output" name="Server" />
       <element id="extracted-dir" path="$USER_HOME$/Downloads/postgresql-42.2.18.jar" path-in-jar="/" />
     </root>
   </artifact>

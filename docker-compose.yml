@@ -7,8 +7,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
-  serveur:
-    image: "serveur"
+  server:
+    image: "server"
     ports: 
       - "8080:8080"
     depends_on:
@@ -17,4 +17,4 @@ services:
     image: "client"
     network_mode: host
     depends_on:
-      - serveur
+      - server

@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 public class Client {
 
     public static void main(String[] args) throws InterruptedException {
-        TimeUnit.SECONDS.sleep(32);
+        TimeUnit.SECONDS.sleep(20);
         File myObj = new File("configClient.txt");
         Scanner myReader = null;
         try {
