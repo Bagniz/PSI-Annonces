@@ -1,0 +1,9 @@
+
+connect to container:
+	psql -h 10.188.41.217  -p 5432 -U postgres -W
+afficher utilisateur du port :
+	sudo lsof -i :5432
+lancer interactive avec un container:
+	docker exec -it db bash
+utile jdbc:
+	http://zetcode.com/java/postgresql/
