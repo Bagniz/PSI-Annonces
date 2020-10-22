@@ -1,16 +1,16 @@
-from openjdk as client
+FROM openjdk as client
 WORKDIR /
 ADD app/Client.jar Client.jar
-ADD config/configClient.txt configClient.txt
+ADD config/serverConfig.txt serverConfig.txt
 CMD ["java","-jar","Client.jar"]
 
-from openjdk as server
+FROM openjdk as server
 WORKDIR /
 ADD app/Server.jar Server.jar
-ADD config/configDB.txt configDB.txt
+ADD config/dbConfig.txt dbConfig.txt
 CMD ["java","-jar","Server.jar"]
 
-from postgres as db
+FROM postgres as db
 COPY Database/createTables.sql /docker-entrypoint-initdb.d/
 COPY Database/createFunctions.sql /docker-entrypoint-initdb.d/
 COPY Database/createTriggers.sql /docker-entrypoint-initdb.d/
