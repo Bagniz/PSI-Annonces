@@ -1,3 +1,7 @@
+\echo '******** Set The Database ********'
+
+\c db_psi
+
 \echo '********* Create The Triggers *********'
 
 -- Stop script on error
