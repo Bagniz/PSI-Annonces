@@ -5,14 +5,16 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class ClientHandler extends Thread{
-    Socket clientConnection;
-    Database database;
-    OutputStreamWriter writer;
-    BufferedReader reader;
+    // Attributes
+    private final Database database;
+    private OutputStreamWriter writer;
+    private BufferedReader reader;
+    private int clientId;
 
+    // Constructor
     public ClientHandler(Socket clientConnection, Database database)
     {
-        this.clientConnection = clientConnection;
+        // Attributes
         this.database = database;
         try {
             this.writer = new OutputStreamWriter((clientConnection.getOutputStream()));
@@ -23,51 +25,55 @@ public class ClientHandler extends Thread{
     }
 
     public void run(){
+        // Authenticating new clients
+        this.authenticateClient();
+    }
+
+    private void authenticateClient(){
+        // Variables
+        int id;
+
         try {
+            // Send SignUp and LogIn menu
             this.writer.write("Hello there, What do you want to do ?\n");
             this.writer.write("1. Log in\n");
             this.writer.write("2. Sign up\n");
             this.writer.write("\r\n");
             this.writer.flush();
-            this.listen();
-        } catch (IOException e) {
-            System.out.println("Client disconnected");
-        }
-    }
 
-    private void listen(){
-        try {
-            String line = this.reader.readLine();
-            switch (line){
+            // Wait for clients response and call the right method
+            String[] request = this.reader.readLine().split(":");
+            switch (request[0]){
                 case "SIGNUP":{
-                    String firstName = this.reader.readLine();
-                    String lastName = this.reader.readLine();
-                    String birthday = this.reader.readLine();
-                    String email = this.reader.readLine();
-                    String password = this.reader.readLine();
-                    String address = this.reader.readLine();
-                    int postalCode = Integer.parseInt(this.reader.readLine());
-                    String city = this.reader.readLine();
-                    String phoneNumber = this.reader.readLine();
-                    int id = database.signUp(firstName, lastName, birthday, email, password, address, postalCode, city, phoneNumber);
+                    id = database.signUp(request[1], request[2], request[3], request[4], request[5], request[6], Integer.parseInt(request[7]), request[8], request[9]);
                     this.writer.write(id + "\n");
-                    this.writer.write("\r\n");
+                    this.writer.flush();
                     break;
                 }
                 case "LOGIN":{
-                    String email = this.reader.readLine();
-                    String password = this.reader.readLine();
-                    int id = database.logIn(email, password);
+                    id = database.logIn(request[1], request[2]);
+                    this.clientId = id;
                     this.writer.write(id + "\n");
-                    this.writer.write("\r\n");
+                    this.writer.flush();
                     break;
                 }
                 default:{
+                    id = -1;
+                    this.writer.write(id + "\n");
+                    this.writer.flush();
                     break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        finally {
+            try {
+                this.writer.write(-1 + "\n");
+                this.writer.flush();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 }

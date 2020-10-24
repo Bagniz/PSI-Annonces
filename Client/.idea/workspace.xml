@@ -25,15 +25,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="286cb722-b8b6-457f-bc7a-3b1712344281" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Requests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Responses.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ServerDaemon.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Client.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Client/Ecoute.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Client/Envoie.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Ecoute.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Envoie.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Requests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Responses.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/Database.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/Server.java" afterDir="false" />
@@ -81,9 +78,11 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Java-TCP.UDP/TCP/Serveur" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -100,13 +99,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -130,6 +131,7 @@
       <workItem from="1602873902036" duration="4356000" />
       <workItem from="1603194312571" duration="4305000" />
       <workItem from="1603226888782" duration="3944000" />
+      <workItem from="1603553135042" duration="8790000" />
     </task>
     <servers />
   </component>
@@ -173,42 +175,47 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="477" y="104" width="946" height="857" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1603400936837" />
+    <state x="693" y="289" width="524" height="494" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1603569424845">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="693" y="289" width="524" height="494" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1603569424845" />
     <state x="631" y="166" width="637" height="748" key="FileChooserDialogImpl" timestamp="1603396401712">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="631" y="166" width="637" height="748" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1603396401712" />
     <state x="494" y="141" width="424" height="513" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1603196335773" />
-    <state width="1878" height="290" key="GridCell.Tab.0.bottom" timestamp="1603406911981">
+    <state width="1878" height="289" key="GridCell.Tab.0.bottom" timestamp="1603572947575">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="290" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1603406911981" />
+    <state width="1878" height="289" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1603572947575" />
     <state width="1253" height="175" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
-    <state width="1878" height="290" key="GridCell.Tab.0.center" timestamp="1603406911980">
+    <state width="1878" height="289" key="GridCell.Tab.0.center" timestamp="1603572947573">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="290" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1603406911980" />
+    <state width="1878" height="289" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1603572947573" />
     <state width="1253" height="175" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
-    <state width="1878" height="290" key="GridCell.Tab.0.left" timestamp="1603406911980">
+    <state width="1878" height="289" key="GridCell.Tab.0.left" timestamp="1603572947572">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="290" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1603406911980" />
+    <state width="1878" height="289" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1603572947572" />
     <state width="1253" height="175" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1603214098956" />
-    <state width="1878" height="290" key="GridCell.Tab.0.right" timestamp="1603406911981">
+    <state width="1878" height="289" key="GridCell.Tab.0.right" timestamp="1603572947574">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="290" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1603406911981" />
+    <state width="1878" height="289" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1603572947574" />
     <state width="1253" height="175" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
-    <state x="199" y="27" width="1024" height="741" key="SettingsEditor" timestamp="1603196341219">
-      <screen x="67" y="27" width="1299" height="741" />
+    <state x="195" y="0" width="1024" height="741" key="SettingsEditor" timestamp="1603555828203">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
+    <state x="195" y="0" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1603555828203" />
     <state x="199" y="27" width="1024" height="741" key="SettingsEditor/67.27.1299.741@67.27.1299.741" timestamp="1603196341219" />
     <state x="67" y="100" width="1289" height="592" key="new project wizard" timestamp="1603210201422">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state x="67" y="100" width="1289" height="592" key="new project wizard/67.27.1299.741@67.27.1299.741" timestamp="1603210201422" />
-    <state x="623" y="238" width="672" height="678" key="search.everywhere.popup" timestamp="1603400976456">
+    <state x="623" y="238" width="672" height="678" key="search.everywhere.popup" timestamp="1603570995926">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="623" y="238" width="672" height="678" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1603400976456" />
+    <state x="623" y="238" width="672" height="678" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1603570995926" />
   </component>
 </project>
