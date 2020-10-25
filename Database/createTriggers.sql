@@ -3,7 +3,7 @@
 \c db_psi
 
 \echo '********* Create The Triggers *********'
-
+insert into categories (name) values ('informatique');;
 -- Stop script on error
 \set ON_ERROR_STOP true
 

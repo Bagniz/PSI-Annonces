@@ -24,6 +24,15 @@ DO $$
 $$ LANGUAGE plpgsql;
 \echo 'Deleted existing functions'
 
+-- Add the crypt extension
+DO $$
+    BEGIN
+        IF (NOT FOUND) THEN
+            CREATE EXTENSION IF NOT EXISTS pgcrypto;
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
+
 -- Log
 CREATE OR REPLACE FUNCTION log_operations()
 RETURNS TRIGGER AS $$
@@ -85,7 +94,7 @@ RETURNS TRIGGER AS $$
         END IF;
 
         -- Encrypt the new password
-        NEW.password := crypt(NEW.password, gen_salt('md5'));
+        NEW.password := crypt(NEW.password,'md5');
         RAISE NOTICE 'New password is now encrypted';
         RETURN NEW;
     END;

@@ -27,6 +27,44 @@ public class ClientHandler extends Thread{
     public void run(){
         // Authenticating new clients
         this.authenticateClient();
+        requestListener();
+    }
+
+    private void requestListener()
+    {
+        String request;
+        try {
+            while (true)
+            {
+
+                if (((request = this.reader.readLine()) != null))
+                {
+                    int id = 0;
+                    String [] requestTab = request.split("\\|");
+                    switch (requestTab[0]){
+                        case "ADDAD":{
+                            id = database.addAd(requestTab[1],requestTab[2],Float.parseFloat(requestTab[3]),Integer.parseInt(requestTab[4]),Integer.parseInt(requestTab[5]));
+                            System.out.println(id);
+                            this.writer.write(id + "\n");
+                            this.writer.flush();
+                            break;
+                        }
+
+                        default:{
+                            id = -1;
+                            this.writer.write(id + "\n");
+                            this.writer.flush();
+                            break;
+                        }
+                    }
+
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private void authenticateClient(){
@@ -42,7 +80,7 @@ public class ClientHandler extends Thread{
             this.writer.flush();
 
             // Wait for clients response and call the right method
-            String[] request = this.reader.readLine().split(":");
+            String[] request = this.reader.readLine().split("\\|");
             switch (request[0]){
                 case "SIGNUP":{
                     id = database.signUp(request[1], request[2], request[3], request[4], request[5], request[6], Integer.parseInt(request[7]), request[8], request[9]);
@@ -67,13 +105,13 @@ public class ClientHandler extends Thread{
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        finally {
+        /*finally {
             try {
                 this.writer.write(-1 + "\n");
                 this.writer.flush();
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
-        }
+        }*/
     }
 }

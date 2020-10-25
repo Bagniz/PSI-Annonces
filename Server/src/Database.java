@@ -1,5 +1,8 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Database {
     // Attributes
@@ -17,16 +20,15 @@ public class Database {
     public boolean connectToDB(){
         try {
             Class.forName("org.postgresql.Driver");
-//            File dbConfigFile = new File("dbConfig.txt");
-//            Scanner reader = new Scanner(dbConfigFile);
-//            String[] dbConfig = reader.nextLine().split(":");
-//            reader.close();
-//            String dbUrl = "jdbc:postgresql://" + dbConfig[1] + ":" + dbConfig[2] + "/" + dbConfig[3];
-            String dbUrl = "jdbc:postgresql://localhost:5432/psiannonces";
+            File dbConfigFile = new File("dbConfig.txt");
+            Scanner reader = new Scanner(dbConfigFile);
+            String[] dbConfig = reader.nextLine().split(":");
+            reader.close();
+            String dbUrl = "jdbc:postgresql://10.188.41.217:" + dbConfig[2] + "/" + dbConfig[3];
             System.out.println(dbUrl);
             Properties dbProperties = new Properties();
-            dbProperties.setProperty("user","bagniz");
-            dbProperties.setProperty("password","1408");
+            dbProperties.setProperty("user","postgres");
+            dbProperties.setProperty("password","postgres");
             dbProperties.setProperty("ssl","false");
             while (this.connection == null){
                 try {
@@ -34,7 +36,7 @@ public class Database {
                 } catch (SQLException ignore){}
             }
             System.out.println("connecté a la bases");
-        } catch (ClassNotFoundException exception) {
+        } catch (ClassNotFoundException | FileNotFoundException exception) {
             exception.printStackTrace();
             return false;
         }
@@ -93,6 +95,29 @@ public class Database {
             this.resultSet = this.statement.executeQuery();
             if(this.resultSet.next())
                 id = this.resultSet.getInt(1);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return id;
+    }
+
+    public int addAd(String title,String description,float price,int idCat,int postedBy)
+    {
+        int id = 0;
+        String query = "INSERT INTO ads (title,description,price,id_cat,posted_by,posting_date) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)";
+        try {
+            this.statement = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            this.statement.setString(1, title);
+            this.statement.setString(2, description);
+            this.statement.setFloat(3, price);
+            this.statement.setInt(4, idCat);
+            this.statement.setInt(5, postedBy);
+            int affectedRows = this.statement.executeUpdate();
+            if(affectedRows > 0){
+                this.resultSet = this.statement.getGeneratedKeys();
+                if(this.resultSet.next())
+                    id = resultSet.getInt(1);
+            }
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
