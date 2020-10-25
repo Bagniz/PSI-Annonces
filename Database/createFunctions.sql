@@ -94,7 +94,7 @@ RETURNS TRIGGER AS $$
         END IF;
 
         -- Encrypt the new password
-        NEW.password := crypt(NEW.password, gen_salt('md5'));
+        NEW.password := crypt(NEW.password,'md5');
         RAISE NOTICE 'New password is now encrypted';
         RETURN NEW;
     END;

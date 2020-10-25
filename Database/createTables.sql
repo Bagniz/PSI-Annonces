@@ -53,16 +53,27 @@ CREATE TABLE IF NOT EXISTS messages(
 );
 \echo 'Created messages table'
 
+-- Categories
+CREATE TABLE IF NOT EXISTS categories(
+    id SERIAL,
+    name TEXT NOT NULL,
+    PRIMARY KEY (id)
+);
+\echo 'Created Categories table'
+
 -- Ads
 CREATE TABLE IF NOT EXISTS ads(
     id SERIAL,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
+    price real NOT NULL CHECK ( price >=0 ),
+    id_cat INTEGER NOT NULL,
     posted_by INTEGER NOT NULL,
     posting_date TIMESTAMP NOT NULL CHECK ( posting_date <= CURRENT_TIMESTAMP ),
-    is_reserved BOOLEAN NOT NULL,
+    is_reserved BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (id),
-    FOREIGN KEY (posted_by) REFERENCES clients(id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (posted_by) REFERENCES clients(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (id_cat) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 \echo 'Created ads table'
 
