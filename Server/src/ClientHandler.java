@@ -42,7 +42,7 @@ public class ClientHandler extends Thread{
             this.writer.flush();
 
             // Wait for clients response and call the right method
-            String[] request = this.reader.readLine().split(":");
+            String[] request = this.reader.readLine().split("\\|");
             switch (request[0]){
                 case "SIGNUP":{
                     id = database.signUp(request[1], request[2], request[3], request[4], request[5], request[6], Integer.parseInt(request[7]), request[8], request[9]);

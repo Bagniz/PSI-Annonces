@@ -62,8 +62,8 @@ public class ServerDaemon {
         Console console = System.console();
 
         System.out.print("Please enter your email: ");
-        logInRequest += ":" + scanner.nextLine();
-        logInRequest += ":" + Arrays.toString(console.readPassword("%s", "Please enter your password: "));
+        logInRequest += "|" + scanner.nextLine();
+        logInRequest += "|" + Arrays.toString(console.readPassword("%s", "Please enter your password: "));
 
         this.writer.write(logInRequest + "\n");
         writer.flush();
@@ -85,22 +85,22 @@ public class ServerDaemon {
         Scanner scanner = new Scanner(System.in);
         Console console = System.console();
         System.out.print("Please enter your first name: ");
-        signUpRequest += ":" + scanner.nextLine();
+        signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your last name: ");
-        signUpRequest += ":" + scanner.nextLine();
+        signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your birthday (yyyy-MM-dd): ");
-        signUpRequest += ":" + scanner.nextLine();
+        signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your email: ");
-        signUpRequest += ":" + scanner.nextLine();
-        signUpRequest += ":" + Arrays.toString(console.readPassword("%s", "Please enter your password: "));
+        signUpRequest += "|" + scanner.nextLine();
+        signUpRequest += "|" + Arrays.toString(console.readPassword("%s", "Please enter your password: "));
         System.out.print("Please enter your address: ");
-        signUpRequest += ":" + scanner.nextLine();
+        signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your postal code: ");
-        signUpRequest += ":" + scanner.nextLine();
+        signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your city: ");
-        signUpRequest += ":" + scanner.nextLine();
+        signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your phone number (+xxx xxx xxx xxxx): ");
-        signUpRequest += ":" + scanner.nextLine();
+        signUpRequest += "|" + scanner.nextLine();
 
         this.writer.write(signUpRequest + "\n");
         writer.flush();

@@ -1,5 +1,8 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Database {
     // Attributes
@@ -33,7 +36,7 @@ public class Database {
                 } catch (SQLException ignore){}
             }
             System.out.println("connecté a la bases");
-        } catch (ClassNotFoundException | InterupptedException exception) {
+        } catch (ClassNotFoundException | FileNotFoundException exception) {
             exception.printStackTrace();
             return false;
         }

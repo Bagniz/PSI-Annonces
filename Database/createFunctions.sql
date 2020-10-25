@@ -24,6 +24,15 @@ DO $$
 $$ LANGUAGE plpgsql;
 \echo 'Deleted existing functions'
 
+-- Add the crypt extension
+DO $$
+    BEGIN
+        IF (NOT FOUND) THEN
+            CREATE EXTENSION IF NOT EXISTS pgcrypto;
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
+
 -- Log
 CREATE OR REPLACE FUNCTION log_operations()
 RETURNS TRIGGER AS $$

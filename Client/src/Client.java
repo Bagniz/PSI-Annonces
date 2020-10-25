@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class Client {
 
@@ -10,6 +11,7 @@ public class Client {
     }
 
     public static void main(String[] args){
+
         // Variables
         Socket serverConnectionSocket = null;
         File serverConfigFile;
@@ -18,6 +20,7 @@ public class Client {
         // Open configuration file
         serverConfigFile = new File("../config/serverConfig.txt");
         try {
+            TimeUnit.SECONDS.sleep(8);
             // Read configuration file
             reader = new Scanner(serverConfigFile);
             String[] config = reader.nextLine().split(":");
@@ -26,7 +29,7 @@ public class Client {
             // Connect to server
             serverConnectionSocket = new Socket(config[1],Integer.parseInt(config[2]));
             System.out.println("Connected to server");
-        } catch (IOException exception) {
+        } catch (IOException | InterruptedException exception) {
             System.out.println("Could not connect to server");
         }
 
