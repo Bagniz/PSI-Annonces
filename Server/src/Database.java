@@ -17,16 +17,15 @@ public class Database {
     public boolean connectToDB(){
         try {
             Class.forName("org.postgresql.Driver");
-//            File dbConfigFile = new File("dbConfig.txt");
-//            Scanner reader = new Scanner(dbConfigFile);
-//            String[] dbConfig = reader.nextLine().split(":");
-//            reader.close();
-//            String dbUrl = "jdbc:postgresql://" + dbConfig[1] + ":" + dbConfig[2] + "/" + dbConfig[3];
-            String dbUrl = "jdbc:postgresql://localhost:5432/psiannonces";
+            File dbConfigFile = new File("dbConfig.txt");
+            Scanner reader = new Scanner(dbConfigFile);
+            String[] dbConfig = reader.nextLine().split(":");
+            reader.close();
+            String dbUrl = "jdbc:postgresql://" + dbConfig[1] + ":" + dbConfig[2] + "/" + dbConfig[3];
             System.out.println(dbUrl);
             Properties dbProperties = new Properties();
-            dbProperties.setProperty("user","bagniz");
-            dbProperties.setProperty("password","1408");
+            dbProperties.setProperty("user","postgres");
+            dbProperties.setProperty("password","postgres");
             dbProperties.setProperty("ssl","false");
             while (this.connection == null){
                 try {
@@ -34,7 +33,7 @@ public class Database {
                 } catch (SQLException ignore){}
             }
             System.out.println("connecté a la bases");
-        } catch (ClassNotFoundException exception) {
+        } catch (ClassNotFoundException | InterupptedException exception) {
             exception.printStackTrace();
             return false;
         }
