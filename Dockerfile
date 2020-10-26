@@ -14,3 +14,4 @@ FROM postgres as db
 COPY Database/createTables.sql /docker-entrypoint-initdb.d/
 COPY Database/createFunctions.sql /docker-entrypoint-initdb.d/
 COPY Database/createTriggers.sql /docker-entrypoint-initdb.d/
+COPY Database/insertData.sql /docker-entrypoint-initdb.d/

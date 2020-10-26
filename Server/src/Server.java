@@ -7,17 +7,21 @@ public class Server {
     public static void main(String[] args) {
         ArrayList<ClientHandler> clients = new ArrayList<>();
         try {
-            // Starting server
-            System.out.println("Starting the server");
-            ServerSocket serverSocket = new ServerSocket(8080);
-            System.out.println("Server started at address: " + serverSocket.getInetAddress());
-
             // Connecting to database
             Database database = new Database();
             if(database.connectToDB())
                 System.out.println(database.getDbVersion());
             else
                 System.out.println("Error while connecting to database");
+
+            // Create a connection cleaner
+            ConnectionsCleaner connectionsCleaner = new ConnectionsCleaner(clients);
+            connectionsCleaner.start();
+
+            // Starting server
+            System.out.println("Starting the server");
+            ServerSocket serverSocket = new ServerSocket(8080);
+            System.out.println("Server started at address: " + serverSocket.getInetAddress());
 
             while (true) {
                 // Wait for new clients
