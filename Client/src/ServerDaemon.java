@@ -61,6 +61,7 @@ public class ServerDaemon {
 
         System.out.print("Please enter your email: ");
         logInRequest += "|" + scanner.nextLine();
+        System.out.print("Please enter your password: ");
         logInRequest += "|" + scanner.nextLine();
         System.out.println(logInRequest);
 
@@ -90,6 +91,7 @@ public class ServerDaemon {
         signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your email: ");
         signUpRequest += "|" + scanner.nextLine();
+        System.out.print("Please enter your password: ");
         signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your address: ");
         signUpRequest += "|" + scanner.nextLine();
@@ -112,13 +114,103 @@ public class ServerDaemon {
         return response;
     }
 
+    public boolean chooseAction(ServerDaemon serverDaemon) {
+        Requests[] requestsTab = Requests.values();
+        int i =1;
+        Client.clearScreen();
+        for(Requests requests : requestsTab)
+        {
+            System.out.println(i + " - " + requests.getInformation());
+            i++;
+        }
+        Scanner scanner = new Scanner(System.in);
+        i = Integer.parseInt(scanner.nextLine());
+        switch (requestsTab[i-1])
+        {
+            case GETAD:{
+                String ad = this.getAd();
+                if(ad.equals("null"))
+                    System.out.println("There is no ad that matches the given id");
+                else
+                    System.out.println(ad);
+                break;
+            }
+
+            case ADDAD:{
+                if (this.addAd() <= 0)
+                    System.out.println("the ad could not be published");
+                else
+                    System.out.println("the ad is published");
+                break;
+            }
+
+            case UPDATEAD:{
+                if(this.updateAd())
+                    System.out.println("Ad updated");
+                else
+                    System.out.println("Ad update failed");
+                break;
+            }
+
+            case DELETEAD:{
+                if(this.deleteAd())
+                    System.out.println("Ad deleted");
+                else
+                    System.out.println("Ad deletion failed");
+                break;
+            }
+
+            case LOGOUT:{
+                System.out.println("Logged Out");
+                return false;
+            }
+
+            default:{
+                System.out.println("Your choice doesn't exist");
+                break;
+            }
+        }
+        return true;
+    }
+
+    public String getAd(){
+        String getAdRequest = Requests.GETAD.getStringValue();
+        Client.clearScreen();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Please enter the id of the Ad: ");
+        getAdRequest += "|" + scanner.nextLine();
+
+        this.writer.write(getAdRequest + "\n");
+        writer.flush();
+
+        String ad = "null";
+        try {
+            String test = reader.readLine();
+            System.out.println(test);
+            String[] response = test.split("\\|");
+
+            if(response.length > 1){
+                ad = "Id: " + response[0] + "\n";
+                ad += "Title: " + response[1] + "\n";
+                ad += "Description: " + response[2] + "\n";
+                ad += "Price: " + response[3] + "\n";
+                ad += "Category: " + response[4] + "\n";
+                ad += "Posted by: " + response[5] + "\n";
+                ad += "Posted in: " + response[6] + "\n";
+                ad += "Reserved: " + response[7] + "\n";
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return ad;
+    }
+
     public int addAd()
     {
         int response = 0;
         String addAdRequest = Requests.ADDAD.getStringValue();
         Client.clearScreen();
         Scanner scanner = new Scanner(System.in);
-        Console console = System.console();
         System.out.print("Please the title of the Ad:");
         addAdRequest += "|" + scanner.nextLine();
         System.out.print("Please enter the description:");
@@ -127,7 +219,6 @@ public class ServerDaemon {
         addAdRequest += "|" + scanner.nextLine();
         System.out.print("Please enter the id of the categorie:");
         addAdRequest += "|" + scanner.nextLine();
-        addAdRequest += "|" + clientId;
 
         this.writer.write(addAdRequest + "\n");
         writer.flush();
@@ -138,6 +229,52 @@ public class ServerDaemon {
             exception.printStackTrace();
         }
         return response;
+    }
+
+    public boolean updateAd(){
+        String updateAdRequest = Requests.UPDATEAD.getStringValue();
+        Client.clearScreen();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the id of the Ad");
+        updateAdRequest += "|" + scanner.nextLine();
+        System.out.print("Please the title of the Ad:");
+        updateAdRequest += "|" + scanner.nextLine();
+        System.out.print("Please enter the description:");
+        updateAdRequest += "|" + scanner.nextLine();
+        System.out.print("Please enter the price:");
+        updateAdRequest += "|" + scanner.nextLine();
+        System.out.print("Please enter the id of the categorie:");
+        updateAdRequest += "|" + scanner.nextLine();
+
+        this.writer.write(updateAdRequest + "\n");
+        writer.flush();
+
+        try {
+            if(reader.readLine().equals("success"))
+                return true;
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteAd(){
+        String deleteAdRequest = Requests.DELETEAD.getStringValue();
+        Client.clearScreen();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the id of the Ad");
+        deleteAdRequest += "|" + scanner.nextLine();
+
+        this.writer.write(deleteAdRequest + "\n");
+        writer.flush();
+
+        try {
+            if(reader.readLine().equals("success"))
+                return true;
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return false;
     }
 
     public void readMessages(){

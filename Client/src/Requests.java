@@ -1,8 +1,12 @@
 public enum Requests {
-    ADDAD("ADDAD","Add a new Ad");
+    GETAD("GETAD", "Get information of an ad"),
+    ADDAD("ADDAD", "Add a new Ad"),
+    UPDATEAD("UPDATEAD", "Update the information of an existing ad"),
+    DELETEAD("DELETEAD", "Delete an existing ad"),
+    LOGOUT("LOGOUT", "Log out");
 
-    private String stringValue;
-    private String information;
+    private final String stringValue;
+    private final String information;
 
     Requests(String stringValue, String information)
     {

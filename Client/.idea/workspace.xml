@@ -25,13 +25,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="286cb722-b8b6-457f-bc7a-3b1712344281" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../Server/src/ConnectionsCleaner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Requests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Requests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ServerDaemon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServerDaemon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Database/createFunctions.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/createFunctions.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/createTables.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/createTables.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/Server.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../app/Client.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Client.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../app/Server.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Server.jar" afterDir="false" />
     </list>
@@ -97,17 +101,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Client" />
@@ -129,6 +122,8 @@
       <workItem from="1603226888782" duration="3944000" />
       <workItem from="1603553135042" duration="8790000" />
       <workItem from="1603634264271" duration="1426000" />
+      <workItem from="1603723295563" duration="3666000" />
+      <workItem from="1603731426139" duration="3486000" />
     </task>
     <servers />
   </component>
@@ -181,30 +176,30 @@
     </state>
     <state x="631" y="166" width="637" height="748" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1603396401712" />
     <state x="494" y="141" width="424" height="513" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1603196335773" />
-    <state width="1878" height="289" key="GridCell.Tab.0.bottom" timestamp="1603635691158">
+    <state width="1878" height="288" key="GridCell.Tab.0.bottom" timestamp="1603734895038">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="289" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1603635691158" />
+    <state width="1878" height="288" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1603734895038" />
     <state width="1253" height="175" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
-    <state width="1878" height="289" key="GridCell.Tab.0.center" timestamp="1603635691158">
+    <state width="1878" height="288" key="GridCell.Tab.0.center" timestamp="1603734895038">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="289" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1603635691158" />
+    <state width="1878" height="288" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1603734895038" />
     <state width="1253" height="175" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
-    <state width="1878" height="289" key="GridCell.Tab.0.left" timestamp="1603635691157">
+    <state width="1878" height="288" key="GridCell.Tab.0.left" timestamp="1603734895037">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="289" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1603635691157" />
+    <state width="1878" height="288" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1603734895037" />
     <state width="1253" height="175" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1603214098956" />
-    <state width="1878" height="289" key="GridCell.Tab.0.right" timestamp="1603635691158">
+    <state width="1878" height="288" key="GridCell.Tab.0.right" timestamp="1603734895038">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="289" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1603635691158" />
+    <state width="1878" height="288" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1603734895038" />
     <state width="1253" height="175" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
-    <state x="195" y="0" width="1024" height="741" key="SettingsEditor" timestamp="1603555828203">
+    <state x="195" y="0" width="1024" height="741" key="SettingsEditor" timestamp="1603723326408">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="195" y="0" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1603555828203" />
+    <state x="195" y="0" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1603723326408" />
     <state x="199" y="27" width="1024" height="741" key="SettingsEditor/67.27.1299.741@67.27.1299.741" timestamp="1603196341219" />
     <state x="67" y="100" width="1289" height="592" key="new project wizard" timestamp="1603210201422">
       <screen x="67" y="27" width="1299" height="741" />

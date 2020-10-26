@@ -6,6 +6,7 @@ import java.net.Socket;
 
 public class ClientHandler extends Thread{
     // Attributes
+    private final Socket clientConnection;
     private final Database database;
     private OutputStreamWriter writer;
     private BufferedReader reader;
@@ -15,6 +16,7 @@ public class ClientHandler extends Thread{
     public ClientHandler(Socket clientConnection, Database database)
     {
         // Attributes
+        this.clientConnection = clientConnection;
         this.database = database;
         try {
             this.writer = new OutputStreamWriter((clientConnection.getOutputStream()));
@@ -24,47 +26,71 @@ public class ClientHandler extends Thread{
         }
     }
 
+    public Socket getClientConnection(){
+        return this.clientConnection;
+    }
+
     public void run(){
         // Authenticating new clients
         this.authenticateClient();
-        requestListener();
+        this.requestListener();
     }
 
-    private void requestListener()
-    {
+    private void requestListener() {
         String request;
-        try {
-            while (true)
-            {
-
-                if (((request = this.reader.readLine()) != null))
-                {
-                    int id = 0;
+        while (true) {
+            try {
+                if (((request = this.reader.readLine()) != null)) {
                     String [] requestTab = request.split("\\|");
                     switch (requestTab[0]){
+                        case "GETAD":{
+                            String ad = database.getAnAd(Integer.parseInt(requestTab[1]));
+                            if(ad.equals("null"))
+                                this.writer.write("Ad of id: " + requestTab[1] + " does not exist\n");
+                            else
+                                this.writer.write(ad + "\n");
+                            this.writer.flush();
+                            break;
+                        }
+
                         case "ADDAD":{
-                            id = database.addAd(requestTab[1],requestTab[2],Float.parseFloat(requestTab[3]),Integer.parseInt(requestTab[4]),Integer.parseInt(requestTab[5]));
+                            int id = database.addAd(requestTab[1],requestTab[2],Float.parseFloat(requestTab[3]),Integer.parseInt(requestTab[4]), clientId);
                             System.out.println(id);
                             this.writer.write(id + "\n");
                             this.writer.flush();
                             break;
                         }
 
+                        case "UPDATEAD":{
+                            if(database.updateAd(Integer.parseInt(requestTab[1]), requestTab[2], requestTab[3], Float.parseFloat(requestTab[4]), Integer.parseInt(requestTab[5]), clientId))
+                                this.writer.write("success\n");
+                            else
+                                this.writer.write("error\n");
+                            this.writer.flush();
+                            break;
+                        }
+
+                        case "DELETEAD":{
+                            if(database.deleteAd(Integer.parseInt(requestTab[1]), clientId))
+                                this.writer.write("success\n");
+                            else
+                                this.writer.write("error\n");
+                            this.writer.flush();
+                            break;
+                        }
+
                         default:{
-                            id = -1;
-                            this.writer.write(id + "\n");
+                            int response = -1;
+                            this.writer.write(response + "\n");
                             this.writer.flush();
                             break;
                         }
                     }
-
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
-
     }
 
     private void authenticateClient(){
@@ -84,6 +110,7 @@ public class ClientHandler extends Thread{
             switch (request[0]){
                 case "SIGNUP":{
                     id = database.signUp(request[1], request[2], request[3], request[4], request[5], request[6], Integer.parseInt(request[7]), request[8], request[9]);
+                    this.clientId = id;
                     this.writer.write(id + "\n");
                     this.writer.flush();
                     break;
@@ -105,13 +132,5 @@ public class ClientHandler extends Thread{
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        /*finally {
-            try {
-                this.writer.write(-1 + "\n");
-                this.writer.flush();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }*/
     }
 }
