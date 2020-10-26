@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class ServerDaemon {
@@ -59,11 +58,11 @@ public class ServerDaemon {
 
         Client.clearScreen();
         Scanner scanner = new Scanner(System.in);
-        Console console = System.console();
 
         System.out.print("Please enter your email: ");
         logInRequest += "|" + scanner.nextLine();
-        logInRequest += "|" + Arrays.toString(console.readPassword("%s", "Please enter your password: "));
+        logInRequest += "|" + scanner.nextLine();
+        System.out.println(logInRequest);
 
         this.writer.write(logInRequest + "\n");
         writer.flush();
@@ -83,7 +82,6 @@ public class ServerDaemon {
 
         Client.clearScreen();
         Scanner scanner = new Scanner(System.in);
-        Console console = System.console();
         System.out.print("Please enter your first name: ");
         signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your last name: ");
@@ -92,7 +90,7 @@ public class ServerDaemon {
         signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your email: ");
         signUpRequest += "|" + scanner.nextLine();
-        signUpRequest += "|" + Arrays.toString(console.readPassword("%s", "Please enter your password: "));
+        signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your address: ");
         signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your postal code: ");
@@ -111,6 +109,34 @@ public class ServerDaemon {
             exception.printStackTrace();
         }
 
+        return response;
+    }
+
+    public int addAd()
+    {
+        int response = 0;
+        String addAdRequest = Requests.ADDAD.getStringValue();
+        Client.clearScreen();
+        Scanner scanner = new Scanner(System.in);
+        Console console = System.console();
+        System.out.print("Please the title of the Ad:");
+        addAdRequest += "|" + scanner.nextLine();
+        System.out.print("Please enter the description:");
+        addAdRequest += "|" + scanner.nextLine();
+        System.out.print("Please enter the price:");
+        addAdRequest += "|" + scanner.nextLine();
+        System.out.print("Please enter the id of the categorie:");
+        addAdRequest += "|" + scanner.nextLine();
+        addAdRequest += "|" + clientId;
+
+        this.writer.write(addAdRequest + "\n");
+        writer.flush();
+
+        try {
+            response = Integer.parseInt(reader.readLine());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
         return response;
     }
 

@@ -24,7 +24,7 @@ public class Database {
             Scanner reader = new Scanner(dbConfigFile);
             String[] dbConfig = reader.nextLine().split(":");
             reader.close();
-            String dbUrl = "jdbc:postgresql://" + dbConfig[1] + ":" + dbConfig[2] + "/" + dbConfig[3];
+            String dbUrl = "jdbc:postgresql://10.188.41.217:" + dbConfig[2] + "/" + dbConfig[3];
             System.out.println(dbUrl);
             Properties dbProperties = new Properties();
             dbProperties.setProperty("user","postgres");
@@ -95,6 +95,29 @@ public class Database {
             this.resultSet = this.statement.executeQuery();
             if(this.resultSet.next())
                 id = this.resultSet.getInt(1);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return id;
+    }
+
+    public int addAd(String title,String description,float price,int idCat,int postedBy)
+    {
+        int id = 0;
+        String query = "INSERT INTO ads (title,description,price,id_cat,posted_by,posting_date) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)";
+        try {
+            this.statement = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            this.statement.setString(1, title);
+            this.statement.setString(2, description);
+            this.statement.setFloat(3, price);
+            this.statement.setInt(4, idCat);
+            this.statement.setInt(5, postedBy);
+            int affectedRows = this.statement.executeUpdate();
+            if(affectedRows > 0){
+                this.resultSet = this.statement.getGeneratedKeys();
+                if(this.resultSet.next())
+                    id = resultSet.getInt(1);
+            }
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
