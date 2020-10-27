@@ -21,7 +21,7 @@ public class Database {
     public boolean connectToDB(){
         try {
             Class.forName("org.postgresql.Driver");
-            File dbConfigFile = new File("../config/dbConfig.txt");
+            File dbConfigFile = new File("dbConfig.txt");
             Scanner reader = new Scanner(dbConfigFile);
             String[] dbConfig = reader.nextLine().split(":");
             reader.close();
@@ -122,6 +122,36 @@ public class Database {
             exception.printStackTrace();
         }
         return idClient;
+    }
+
+    // Get all the ads
+    public String getAds(boolean mine, int clientId){
+        StringBuilder ads = new StringBuilder("null");
+        String getAdsQuery = "SELECT * FROM ads WHERE";
+        if(mine)
+            getAdsQuery += " posted_by = ?";
+        else
+            getAdsQuery += " posted_by != ? AND is_reserved=false";
+        try {
+            this.statement = this.connection.prepareStatement(getAdsQuery);
+            this.statement.setInt(1, clientId);
+            this.resultSet = this.statement.executeQuery();
+            if(this.resultSet.next()){
+                ads = new StringBuilder("");
+                do{
+                    ads.append(this.resultSet.getString("id"));
+                    ads.append("|").append(this.resultSet.getString("title"));
+                    ads.append("|").append(this.resultSet.getString("description"));
+                    if(this.resultSet.next())
+                        ads.append("|");
+                    else
+                        break;
+                }while(true);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return ads.toString();
     }
 
     // Get an ad

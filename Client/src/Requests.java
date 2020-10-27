@@ -1,4 +1,5 @@
 public enum Requests {
+    GETADS("GETADS", "Get available ads"),
     GETAD("GETAD", "Get information of an ad"),
     ADDAD("ADDAD", "Add a new Ad"),
     UPDATEAD("UPDATEAD", "Update the information of an existing ad"),

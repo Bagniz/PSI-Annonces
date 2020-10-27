@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ServerDaemon {
@@ -127,6 +128,12 @@ public class ServerDaemon {
         i = Integer.parseInt(scanner.nextLine());
         switch (requestsTab[i-1])
         {
+            case GETADS:{
+                String ads = this.getAds();
+                System.out.println(Objects.requireNonNullElse(ads, "Operation failed"));
+                break;
+            }
+
             case GETAD:{
                 String ad = this.getAd();
                 if(ad.equals("null"))
@@ -200,6 +207,40 @@ public class ServerDaemon {
             }
         }
         return true;
+    }
+
+    private String getAds() {
+        String getAdsRequest = Requests.GETADS.getStringValue();
+        Client.clearScreen();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Do you want to see your ads (yes|no): ");
+        if(scanner.nextLine().equals("yes"))
+            getAdsRequest += "|" + true;
+        else
+            getAdsRequest += "|" + false;
+
+        this.writer.write(getAdsRequest + "\n");
+        this.writer.flush();
+
+        String ads = null;
+        try {
+            String[] response = reader.readLine().split("\\|");
+            StringBuilder adsBuilder = new StringBuilder("");
+            if(response.length > 1){
+                for(int i = 0; i < response.length; i += 3){
+                    adsBuilder.append("Id: ").append(response[i]).append("\n");
+                    adsBuilder.append("Title: ").append(response[i+1]).append("\n");
+                    adsBuilder.append("Description: ").append(response[i+2]).append("\n");
+                }
+                ads = adsBuilder.toString();
+            }
+            else{
+                ads = response[0];
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return ads;
     }
 
     public String getAd(){

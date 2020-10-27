@@ -41,9 +41,18 @@ public class ClientHandler extends Thread{
         while (true) {
             try {
                 if (((request = this.reader.readLine()) != null)) {
-                    System.out.println(request);
                     String [] requestTab = request.split("\\|");
                     switch (requestTab[0]){
+                        case "GETADS":{
+                            String ads = database.getAds(Boolean.parseBoolean(requestTab[1]), clientId);
+                            if(ads.equals("null"))
+                                this.writer.write("There are no ads\n");
+                            else
+                                this.writer.write(ads + "\n");
+                            this.writer.flush();
+                            break;
+                        }
+
                         case "GETAD":{
                             String ad = database.getAnAd(Integer.parseInt(requestTab[1]));
                             if(ad.equals("null"))

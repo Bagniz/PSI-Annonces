@@ -20,7 +20,7 @@ public class Client {
         Scanner reader;
 
         // Open configuration file
-        serverConfigFile = new File("../config/serverConfig.txt");
+        serverConfigFile = new File("serverConfig.txt");
         while(true){
             try {
                 // Read configuration file
