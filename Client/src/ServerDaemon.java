@@ -165,6 +165,17 @@ public class ServerDaemon {
                 return false;
             }
 
+            case GETCLIENTINFO:{
+                String clientInfo = this.getClientInfo();
+                if(clientInfo.equals("null")){
+                    System.out.println("Operation failed");
+                }
+                else{
+                    System.out.println(clientInfo);
+                }
+                break;
+            }
+
             case UPDATECLIENT:{
                 if(this.updateClient())
                     System.out.println("Client updated");
@@ -203,9 +214,7 @@ public class ServerDaemon {
 
         String ad = "null";
         try {
-            String test = reader.readLine();
-            System.out.println(test);
-            String[] response = test.split("\\|");
+            String[] response = reader.readLine().split("\\|");
 
             if(response.length > 1){
                 ad = "Id: " + response[0] + "\n";
@@ -295,6 +304,32 @@ public class ServerDaemon {
         return false;
     }
 
+    public String getClientInfo(){
+        String clientInfo = "null";
+        String infoClientRequest = Requests.GETCLIENTINFO.getStringValue();
+        this.writer.write(infoClientRequest + "\n");
+        this.writer.flush();
+        try {
+            String[] response = this.reader.readLine().split("\\|");
+            if(response.length > 1){
+                clientInfo = "First Name: " + response[0] + "\n";
+                clientInfo += "Last Name: " + response[1] + "\n";
+                clientInfo += "Birthday: " + response[2] + "\n";
+                clientInfo += "Email: " + response[3] + "\n";
+                clientInfo += "Address: " + response[4] + "\n";
+                clientInfo += "Postal Code: " + response[5] + "\n";
+                clientInfo += "City: " + response[6] + "\n";
+                clientInfo += "Phone Number: " + response[7] + "\n";
+            }
+            else if(response.length == 1){
+                clientInfo = response[0];
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return clientInfo;
+    }
+
     public boolean updateClient()
     {
         String updateClient = Requests.UPDATECLIENT.getStringValue();
@@ -323,7 +358,7 @@ public class ServerDaemon {
         updateClient += "|" + clientId;
 
         this.writer.write(updateClient + "\n");
-        writer.flush();
+        this.writer.flush();
 
         try {
             if(reader.readLine().equals("success"))

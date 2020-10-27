@@ -21,7 +21,7 @@ public class Database {
     public boolean connectToDB(){
         try {
             Class.forName("org.postgresql.Driver");
-            File dbConfigFile = new File("dbConfig.txt");
+            File dbConfigFile = new File("../config/dbConfig.txt");
             Scanner reader = new Scanner(dbConfigFile);
             String[] dbConfig = reader.nextLine().split(":");
             reader.close();
