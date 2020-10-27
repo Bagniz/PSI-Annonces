@@ -165,6 +165,24 @@ public class ServerDaemon {
                 return false;
             }
 
+            case UPDATECLIENT:{
+                if(this.updateClient())
+                    System.out.println("Client updated");
+                else
+                    System.out.println("Client update failed");
+                break;
+            }
+
+            case DELETECLIENT:{
+                if(this.deleteClient()){
+                    System.out.println("Client account is deleted");
+                    return false;
+                }
+                else
+                    System.out.println("Client account deletion failed");
+                break;
+            }
+
             default:{
                 System.out.println("Your choice doesn't exist");
                 break;
@@ -266,6 +284,64 @@ public class ServerDaemon {
         deleteAdRequest += "|" + scanner.nextLine();
 
         this.writer.write(deleteAdRequest + "\n");
+        writer.flush();
+
+        try {
+            if(reader.readLine().equals("success"))
+                return true;
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateClient()
+    {
+        String updateClient = Requests.UPDATECLIENT.getStringValue();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("If you don't want to change any field just right next");
+        System.out.print("Please enter your new first name: ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter your last name: ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter your birthday (yyyy-MM-dd): ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter your email: ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter the old password you can't use next here: ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter the new password if you want: ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter your address: ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter your postal code: ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter your city: ");
+        updateClient += "|" + scanner.nextLine();
+        System.out.print("Please enter your phone number (+xxx xxx xxx xxxx): ");
+        updateClient += "|" + scanner.nextLine();
+        updateClient += "|" + clientId;
+
+        this.writer.write(updateClient + "\n");
+        writer.flush();
+
+        try {
+            if(reader.readLine().equals("success"))
+                return true;
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+    public boolean deleteClient(){
+        String deleteClientRequest = Requests.DELETECLIENT.getStringValue();
+        Client.clearScreen();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter your password to delete your account");
+        deleteClientRequest += "|" + scanner.nextLine();
+        deleteClientRequest += "|" + clientId;
+
+        this.writer.write(deleteClientRequest + "\n");
         writer.flush();
 
         try {
