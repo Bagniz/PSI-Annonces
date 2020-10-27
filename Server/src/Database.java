@@ -25,7 +25,7 @@ public class Database {
             Scanner reader = new Scanner(dbConfigFile);
             String[] dbConfig = reader.nextLine().split(":");
             reader.close();
-            String dbUrl = "jdbc:postgresql://" + dbConfig[1] + ":" + dbConfig[2] + "/" + dbConfig[3];
+            String dbUrl = "jdbc:postgresql://localhost:" + dbConfig[2] + "/" + dbConfig[3];
             System.out.println(dbUrl);
             Properties dbProperties = new Properties();
             dbProperties.setProperty("user","postgres");
@@ -209,6 +209,63 @@ public class Database {
         return false;
     }
 
+    public String[] getClientInformation(int id_client)
+    {
+        String[] client = new String[9];
+        String getClientQuery = "SELECT * FROM clients WHERE id = ?";
+        try {
+            this.statement = this.connection.prepareStatement(getClientQuery);
+            this.statement.setInt(1, id_client);
+            this.resultSet = this.statement.executeQuery();
+            ResultSet temp = this.resultSet;
+            if(this.resultSet.next()){
+                client[0] = temp.getString("first_name");
+                client[1] = temp.getString("last_name");
+                client[2] = temp.getString("birthdate");
+                client[3] = temp.getString("email");
+                client[4] = temp.getString("password");
+                client[5] = temp.getString("address");
+                client[6] = temp.getString("postal_code");
+                client[7] = temp.getString("city");
+                client[8] = temp.getString("phone_number");
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return client;
+    }
+
+    public boolean updateClient(String first_name, String last_name, String birthdate, String email, String oldPassword, String newPassword, String address, int postal_code, String city, String phone_number, int id_client)
+    {
+        String updateClientQuery = "UPDATE clients SET first_name = ?, last_name = ?,  birthdate = ?, email = ?, password = ?, address = ?, postal_code = ?, city = ?, phone_number = ? WHERE id = ? AND password = crypt(?, 'md5')";
+        try {
+            this.statement = this.connection.prepareStatement(updateClientQuery);
+            this.statement.setString(1, first_name);
+            this.statement.setString(2, last_name);
+            this.statement.setDate(3, Date.valueOf(birthdate));
+            this.statement.setString(4, email);
+            if(newPassword.equals("next")){
+                this.statement.setString(5, oldPassword);
+            }
+            else{
+                this.statement.setString(5, newPassword);
+            }
+            this.statement.setString(6, address);
+            this.statement.setInt(7, postal_code);
+            this.statement.setString(8, city);
+            this.statement.setString(9, phone_number);
+            this.statement.setInt(10, id_client);
+            this.statement.setString(11, oldPassword);
+
+            int affectedRows = this.statement.executeUpdate();
+            if(affectedRows > 0)
+                return true;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
     // Delete an existing ad
     public boolean deleteAd(int idAdd, int postedBy){
         String deleteAddQuery = "DELETE FROM ads WHERE id=? AND posted_by=?";
@@ -216,6 +273,21 @@ public class Database {
             this.statement = this.connection.prepareStatement(deleteAddQuery);
             this.statement.setInt(1, idAdd);
             this.statement.setInt(2, postedBy);
+            int affectedRows = this.statement.executeUpdate();
+            if(affectedRows > 0)
+                return true;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+    public boolean deleteClient(String password,int id_client)
+    {
+        String deleteClientQuery = "DELETE FROM clients WHERE id = ? AND password = crypt(?, 'md5')";
+        try {
+            this.statement = this.connection.prepareStatement(deleteClientQuery);
+            this.statement.setInt(1, id_client);
+            this.statement.setString(2, password);
             int affectedRows = this.statement.executeUpdate();
             if(affectedRows > 0)
                 return true;

@@ -3,7 +3,9 @@ public enum Requests {
     ADDAD("ADDAD", "Add a new Ad"),
     UPDATEAD("UPDATEAD", "Update the information of an existing ad"),
     DELETEAD("DELETEAD", "Delete an existing ad"),
-    LOGOUT("LOGOUT", "Log out");
+    LOGOUT("LOGOUT", "Log out"),
+    UPDATECLIENT("UPDATECLIENT","Update your personnel information"),
+    DELETECLIENT("DELETECLIENT","DELETE YOUR ACCOUNT");
 
     private final String stringValue;
     private final String information;

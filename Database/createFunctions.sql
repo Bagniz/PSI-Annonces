@@ -85,14 +85,6 @@ RETURNS TRIGGER AS $$
             CREATE EXTENSION IF NOT EXISTS pgcrypto;
         END IF;
 
-        -- If it's an UPDATE the we test if the password is different
-        IF (TG_OP = 'UPDATE') THEN
-            IF (crypt(OLD.password, NEW.password)) THEN
-                RAISE NOTICE 'The password is already encrypted';
-                RETURN NEW;
-            END IF;
-        END IF;
-
         -- Encrypt the new password
         NEW.password := crypt(NEW.password,'md5');
         RAISE NOTICE 'New password is now encrypted';

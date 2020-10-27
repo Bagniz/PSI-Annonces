@@ -41,6 +41,7 @@ public class ClientHandler extends Thread{
         while (true) {
             try {
                 if (((request = this.reader.readLine()) != null)) {
+                    System.out.println(request);
                     String [] requestTab = request.split("\\|");
                     switch (requestTab[0]){
                         case "GETAD":{
@@ -70,8 +71,42 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
+                        case "UPDATECLIENT":{
+                            String[] clientInformationTab = database.getClientInformation(Integer.parseInt(requestTab[11]));
+                            int k=1;
+                            for (int i =0;i<9;i++)
+                            {
+                                if(i==5)
+                                {
+                                    k++;
+                                }
+                                if (requestTab[i+k].equals("next"))
+                                {
+                                    requestTab[i+k] = clientInformationTab[i];
+                                }
+                            }
+                            if(database.updateClient(requestTab[1],requestTab[2],requestTab[3],requestTab[4],requestTab[5],requestTab[6],requestTab[7],Integer.parseInt(requestTab[8]),requestTab[9],requestTab[10],Integer.parseInt(requestTab[11])))
+                            {
+                                this.writer.write("success\n");
+                            }
+                            else {
+                                this.writer.write("error\n");
+                            }
+                            this.writer.flush();
+                            break;
+                        }
+
                         case "DELETEAD":{
                             if(database.deleteAd(Integer.parseInt(requestTab[1]), clientId))
+                                this.writer.write("success\n");
+                            else
+                                this.writer.write("error\n");
+                            this.writer.flush();
+                            break;
+                        }
+
+                        case "DELETECLIENT":{
+                            if(database.deleteClient(requestTab[1],Integer.parseInt(requestTab[2])))
                                 this.writer.write("success\n");
                             else
                                 this.writer.write("error\n");
