@@ -41,9 +41,18 @@ public class ClientHandler extends Thread{
         while (true) {
             try {
                 if (((request = this.reader.readLine()) != null)) {
-                    System.out.println(request);
                     String [] requestTab = request.split("\\|");
                     switch (requestTab[0]){
+                        case "GETADS":{
+                            String ads = database.getAds(Boolean.parseBoolean(requestTab[1]), clientId);
+                            if(ads.equals("null"))
+                                this.writer.write("There are no ads\n");
+                            else
+                                this.writer.write(ads + "\n");
+                            this.writer.flush();
+                            break;
+                        }
+
                         case "GETAD":{
                             String ad = database.getAnAd(Integer.parseInt(requestTab[1]));
                             if(ad.equals("null"))
@@ -67,6 +76,26 @@ public class ClientHandler extends Thread{
                                 this.writer.write("success\n");
                             else
                                 this.writer.write("error\n");
+                            this.writer.flush();
+                            break;
+                        }
+
+                        case "GETCLIENTINFO":{
+                            String[] clientInfo = this.database.getClientInformation(clientId);
+                            if(clientInfo[0] == null){
+                                this.writer.write("Account does not exist");
+                            }
+                            else{
+                                StringBuilder clientInfoResponse = new StringBuilder(clientInfo[0]);
+                                for(int i = 1;i < 9; i++){
+                                    if(i == 4)
+                                        continue;
+                                    clientInfoResponse.append("|").append(clientInfo[i]);
+                                }
+                                clientInfoResponse.append("\n");
+
+                                this.writer.write(clientInfoResponse.toString());
+                            }
                             this.writer.flush();
                             break;
                         }

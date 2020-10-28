@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ServerDaemon {
@@ -127,6 +128,12 @@ public class ServerDaemon {
         i = Integer.parseInt(scanner.nextLine());
         switch (requestsTab[i-1])
         {
+            case GETADS:{
+                String ads = this.getAds();
+                System.out.println(Objects.requireNonNullElse(ads, "Operation failed"));
+                break;
+            }
+
             case GETAD:{
                 String ad = this.getAd();
                 if(ad.equals("null"))
@@ -165,6 +172,17 @@ public class ServerDaemon {
                 return false;
             }
 
+            case GETCLIENTINFO:{
+                String clientInfo = this.getClientInfo();
+                if(clientInfo.equals("null")){
+                    System.out.println("Operation failed");
+                }
+                else{
+                    System.out.println(clientInfo);
+                }
+                break;
+            }
+
             case UPDATECLIENT:{
                 if(this.updateClient())
                     System.out.println("Client updated");
@@ -191,6 +209,40 @@ public class ServerDaemon {
         return true;
     }
 
+    private String getAds() {
+        String getAdsRequest = Requests.GETADS.getStringValue();
+        Client.clearScreen();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Do you want to see your ads (yes|no): ");
+        if(scanner.nextLine().equals("yes"))
+            getAdsRequest += "|" + true;
+        else
+            getAdsRequest += "|" + false;
+
+        this.writer.write(getAdsRequest + "\n");
+        this.writer.flush();
+
+        String ads = null;
+        try {
+            String[] response = reader.readLine().split("\\|");
+            StringBuilder adsBuilder = new StringBuilder("");
+            if(response.length > 1){
+                for(int i = 0; i < response.length; i += 3){
+                    adsBuilder.append("Id: ").append(response[i]).append("\n");
+                    adsBuilder.append("Title: ").append(response[i+1]).append("\n");
+                    adsBuilder.append("Description: ").append(response[i+2]).append("\n");
+                }
+                ads = adsBuilder.toString();
+            }
+            else{
+                ads = response[0];
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return ads;
+    }
+
     public String getAd(){
         String getAdRequest = Requests.GETAD.getStringValue();
         Client.clearScreen();
@@ -203,9 +255,7 @@ public class ServerDaemon {
 
         String ad = "null";
         try {
-            String test = reader.readLine();
-            System.out.println(test);
-            String[] response = test.split("\\|");
+            String[] response = reader.readLine().split("\\|");
 
             if(response.length > 1){
                 ad = "Id: " + response[0] + "\n";
@@ -295,6 +345,32 @@ public class ServerDaemon {
         return false;
     }
 
+    public String getClientInfo(){
+        String clientInfo = "null";
+        String infoClientRequest = Requests.GETCLIENTINFO.getStringValue();
+        this.writer.write(infoClientRequest + "\n");
+        this.writer.flush();
+        try {
+            String[] response = this.reader.readLine().split("\\|");
+            if(response.length > 1){
+                clientInfo = "First Name: " + response[0] + "\n";
+                clientInfo += "Last Name: " + response[1] + "\n";
+                clientInfo += "Birthday: " + response[2] + "\n";
+                clientInfo += "Email: " + response[3] + "\n";
+                clientInfo += "Address: " + response[4] + "\n";
+                clientInfo += "Postal Code: " + response[5] + "\n";
+                clientInfo += "City: " + response[6] + "\n";
+                clientInfo += "Phone Number: " + response[7] + "\n";
+            }
+            else if(response.length == 1){
+                clientInfo = response[0];
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return clientInfo;
+    }
+
     public boolean updateClient()
     {
         String updateClient = Requests.UPDATECLIENT.getStringValue();
@@ -323,7 +399,7 @@ public class ServerDaemon {
         updateClient += "|" + clientId;
 
         this.writer.write(updateClient + "\n");
-        writer.flush();
+        this.writer.flush();
 
         try {
             if(reader.readLine().equals("success"))
