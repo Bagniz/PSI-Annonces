@@ -137,7 +137,7 @@ public class Database {
             this.statement.setInt(1, clientId);
             this.resultSet = this.statement.executeQuery();
             if(this.resultSet.next()){
-                ads = new StringBuilder("");
+                ads = new StringBuilder();
                 do{
                     ads.append(this.resultSet.getString("id"));
                     ads.append("|").append(this.resultSet.getString("title"));
@@ -179,6 +179,7 @@ public class Database {
         return ad.toString();
     }
 
+    // Get the name of a category from its ID
     private String getCategory(int id_cat) {
         String category = "null";
         String getCategoryQuery = "SELECT name FROM categories WHERE id = ?";
@@ -239,6 +240,86 @@ public class Database {
         return false;
     }
 
+    // Delete an existing ad
+    public boolean deleteAd(int idAdd, int postedBy){
+        String deleteAdQuery = "DELETE FROM ads WHERE id=? AND posted_by=?";
+        try {
+            this.statement = this.connection.prepareStatement(deleteAdQuery);
+            this.statement.setInt(1, idAdd);
+            this.statement.setInt(2, postedBy);
+            int affectedRows = this.statement.executeUpdate();
+            if(affectedRows > 0)
+                return true;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
+    // Get all the reserved ads by a client
+    public String getReservedAds(int clientId) {
+        StringBuilder ads = new StringBuilder("null");
+        String getAdsQuery = "SELECT * FROM ads WHERE is_reserved = true AND id IN (SELECT id_ad FROM reservations WHERE id_client = ?)";
+        try {
+            this.statement = this.connection.prepareStatement(getAdsQuery);
+            this.statement.setInt(1, clientId);
+            this.resultSet = this.statement.executeQuery();
+            if(this.resultSet.next()){
+                ads = new StringBuilder();
+                do{
+                    ads.append(this.resultSet.getString("id"));
+                    ads.append("|").append(this.resultSet.getString("title"));
+                    ads.append("|").append(this.resultSet.getString("description"));
+                    if(this.resultSet.next())
+                        ads.append("|");
+                    else
+                        break;
+                }while(true);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return ads.toString();
+    }
+
+    // Reserve an ad by a client
+    public boolean reserveAd(int idAd, int idClient){
+        String reserveAdQuery = "INSERT INTO reservations (id_ad,id_client) VALUES (?,?); UPDATE ads SET is_reserved = true WHERE id = ?";
+        try{
+            this.statement = this.connection.prepareStatement(reserveAdQuery);
+            this.statement.setInt(1, idAd);
+            this.statement.setInt(2, idClient);
+            this.statement.setInt(3, idAd);
+            int affectedRows = this.statement.executeUpdate();
+            if(affectedRows > 0)
+                return true;
+        } catch (SQLException exception){
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
+    // Unreserve an ad by the creator of the ad
+    public boolean unReserveAd(int idAd, int client){
+        String reserveAdQuery = "UPDATE ads SET is_reserved = false WHERE id = ?;DELETE FROM reservations WHERE id_ad = ? AND (SELECT posted_by FROM ads WHERE id = ?) = ? OR id_client = ?";
+        try{
+            this.statement = this.connection.prepareStatement(reserveAdQuery);
+            this.statement.setInt(1, idAd);
+            this.statement.setInt(2, idAd);
+            this.statement.setInt(3, client);
+            this.statement.setInt(4, client);
+            this.statement.setInt(5, idAd);
+            int affectedRows = this.statement.executeUpdate();
+            System.out.println(affectedRows);
+            if(affectedRows > 0)
+                return true;
+        } catch (SQLException exception){
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
+    // Get clients information
     public String[] getClientInformation(int id_client)
     {
         String[] client = new String[9];
@@ -265,6 +346,7 @@ public class Database {
         return client;
     }
 
+    // Update clients information
     public boolean updateClient(String first_name, String last_name, String birthdate, String email, String oldPassword, String newPassword, String address, int postal_code, String city, String phone_number, int id_client)
     {
         String updateClientQuery = "UPDATE clients SET first_name = ?, last_name = ?,  birthdate = ?, email = ?, password = ?, address = ?, postal_code = ?, city = ?, phone_number = ? WHERE id = ? AND password = crypt(?, 'md5')";
@@ -296,21 +378,7 @@ public class Database {
         return false;
     }
 
-    // Delete an existing ad
-    public boolean deleteAd(int idAdd, int postedBy){
-        String deleteAddQuery = "DELETE FROM ads WHERE id=? AND posted_by=?";
-        try {
-            this.statement = this.connection.prepareStatement(deleteAddQuery);
-            this.statement.setInt(1, idAdd);
-            this.statement.setInt(2, postedBy);
-            int affectedRows = this.statement.executeUpdate();
-            if(affectedRows > 0)
-                return true;
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
-        return false;
-    }
+    // Delete a clients account
     public boolean deleteClient(String password,int id_client)
     {
         String deleteClientQuery = "DELETE FROM clients WHERE id = ? AND password = crypt(?, 'md5')";
@@ -326,4 +394,5 @@ public class Database {
         }
         return false;
     }
+
 }

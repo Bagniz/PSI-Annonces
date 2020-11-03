@@ -80,6 +80,43 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
+                        case "DELETEAD":{
+                            if(database.deleteAd(Integer.parseInt(requestTab[1]), clientId))
+                                this.writer.write("success\n");
+                            else
+                                this.writer.write("error\n");
+                            this.writer.flush();
+                            break;
+                        }
+
+                        case "GETRESERVEDADS":{
+                            String ads = database.getReservedAds(clientId);
+                            if(ads.equals("null"))
+                                this.writer.write("There are no ads\n");
+                            else
+                                this.writer.write(ads + "\n");
+                            this.writer.flush();
+                            break;
+                        }
+
+                        case "RESERVEAD":{
+                            if(database.reserveAd(Integer.parseInt(requestTab[1]), clientId))
+                                this.writer.write("success\n");
+                            else
+                                this.writer.write("error\n");
+                            this.writer.flush();
+                            break;
+                        }
+
+                        case "UNRESERVEAD":{
+                            if(database.unReserveAd(Integer.parseInt(requestTab[1]), clientId))
+                                this.writer.write("success\n");
+                            else
+                                this.writer.write("error\n");
+                            this.writer.flush();
+                            break;
+                        }
+
                         case "GETCLIENTINFO":{
                             String[] clientInfo = this.database.getClientInformation(clientId);
                             if(clientInfo[0] == null){
@@ -121,15 +158,6 @@ public class ClientHandler extends Thread{
                             else {
                                 this.writer.write("error\n");
                             }
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case "DELETEAD":{
-                            if(database.deleteAd(Integer.parseInt(requestTab[1]), clientId))
-                                this.writer.write("success\n");
-                            else
-                                this.writer.write("error\n");
                             this.writer.flush();
                             break;
                         }

@@ -115,7 +115,7 @@ public class ServerDaemon {
         return response;
     }
 
-    public boolean chooseAction(ServerDaemon serverDaemon) {
+    public boolean chooseAction() {
         Requests[] requestsTab = Requests.values();
         int i =1;
         Client.clearScreen();
@@ -164,6 +164,28 @@ public class ServerDaemon {
                     System.out.println("Ad deleted");
                 else
                     System.out.println("Ad deletion failed");
+                break;
+            }
+
+            case GETRESERVEDADS:{
+                String ads = this.getReservedAds();
+                System.out.println(Objects.requireNonNullElse(ads, "Operation failed"));
+                break;
+            }
+
+            case RESERVEAD:{
+                if(this.resUnresAd(true))
+                    System.out.println("The ad has been reserved");
+                else
+                    System.out.println("Reservation operation failed");
+                break;
+            }
+
+            case UNRESERVEAD:{
+                if(this.resUnresAd(false))
+                    System.out.println("The ad has been unreserved");
+                else
+                    System.out.println("Unresevation operation failed");
                 break;
             }
 
@@ -225,7 +247,7 @@ public class ServerDaemon {
         String ads = null;
         try {
             String[] response = reader.readLine().split("\\|");
-            StringBuilder adsBuilder = new StringBuilder("");
+            StringBuilder adsBuilder = new StringBuilder();
             if(response.length > 1){
                 for(int i = 0; i < response.length; i += 3){
                     adsBuilder.append("Id: ").append(response[i]).append("\n");
@@ -285,7 +307,7 @@ public class ServerDaemon {
         addAdRequest += "|" + scanner.nextLine();
         System.out.print("Please enter the price:");
         addAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter the id of the categorie:");
+        System.out.print("Please enter the id of the category:");
         addAdRequest += "|" + scanner.nextLine();
 
         this.writer.write(addAdRequest + "\n");
@@ -311,7 +333,7 @@ public class ServerDaemon {
         updateAdRequest += "|" + scanner.nextLine();
         System.out.print("Please enter the price:");
         updateAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter the id of the categorie:");
+        System.out.print("Please enter the id of the category:");
         updateAdRequest += "|" + scanner.nextLine();
 
         this.writer.write(updateAdRequest + "\n");
@@ -334,6 +356,56 @@ public class ServerDaemon {
         deleteAdRequest += "|" + scanner.nextLine();
 
         this.writer.write(deleteAdRequest + "\n");
+        writer.flush();
+
+        try {
+            if(reader.readLine().equals("success"))
+                return true;
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
+    public String getReservedAds(){
+        String getReservedAdsRequest = Requests.GETRESERVEDADS.getStringValue();
+        Client.clearScreen();
+        this.writer.write(getReservedAdsRequest + "\n");
+        this.writer.flush();
+
+        String ads = null;
+        try {
+            String[] response = reader.readLine().split("\\|");
+            StringBuilder adsBuilder = new StringBuilder();
+            if(response.length > 1){
+                for(int i = 0; i < response.length; i += 3){
+                    adsBuilder.append("Id: ").append(response[i]).append("\n");
+                    adsBuilder.append("Title: ").append(response[i+1]).append("\n");
+                    adsBuilder.append("Description: ").append(response[i+2]).append("\n");
+                }
+                ads = adsBuilder.toString();
+            }
+            else{
+                ads = response[0];
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return ads;
+    }
+
+    public boolean resUnresAd(boolean reserve){
+        String resUnresAdRequest;
+        if(reserve)
+            resUnresAdRequest = Requests.RESERVEAD.getStringValue();
+        else
+            resUnresAdRequest = Requests.UNRESERVEAD.getStringValue();
+        Client.clearScreen();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the id of the Ad");
+        resUnresAdRequest += "|" + scanner.nextLine();
+
+        this.writer.write(resUnresAdRequest + "\n");
         writer.flush();
 
         try {

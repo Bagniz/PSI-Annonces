@@ -46,6 +46,14 @@ CREATE TRIGGER ADS_LOG
     EXECUTE PROCEDURE log_operations();
 \echo 'Created ADS_LOG trigger ON distributors'
 
+-- Reservations
+CREATE TRIGGER RESERVATION_LOG
+    AFTER INSERT OR UPDATE OR DELETE
+    ON reservations
+    FOR EACH ROW
+    EXECUTE PROCEDURE log_operations();
+\echo 'Created RESERVATION_LOG trigger ON distributors'
+
 -- Adimages
 CREATE TRIGGER ADIMAGES_LOG
     AFTER INSERT OR UPDATE OR DELETE

@@ -1,9 +1,6 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.Socket;
-import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class Client {
 
@@ -15,7 +12,7 @@ public class Client {
     public static void main(String[] args){
 
         // Variables
-        Socket serverConnectionSocket = null;
+        Socket serverConnectionSocket;
         File serverConfigFile;
         Scanner reader;
 
@@ -42,7 +39,7 @@ public class Client {
         if(serverDaemon.authenticate()) {
             System.out.println("Hello there, here are some commands try them");
             while(true){
-                if(!serverDaemon.chooseAction(serverDaemon))
+                if(!serverDaemon.chooseAction())
                     break;
             }
         }

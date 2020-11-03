@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS ads(
     id SERIAL,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    price real NOT NULL CHECK ( price >= 0 ),
+    price MONEY NOT NULL CHECK ( price >= MONEY(0.0) ),
     id_cat INTEGER NOT NULL,
     posted_by INTEGER NOT NULL,
     posting_date TIMESTAMP NOT NULL CHECK ( posting_date <= CURRENT_TIMESTAMP ) DEFAULT CURRENT_TIMESTAMP,
@@ -76,6 +76,17 @@ CREATE TABLE IF NOT EXISTS ads(
     FOREIGN KEY (id_cat) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 \echo 'Created ads table'
+
+-- Reservations
+CREATE TABLE reservations(
+    id SERIAL,
+    id_ad INT NOT NULL,
+    id_client INT NOT NULL,
+    PRIMARY KEY (id, id_ad, id_client),
+    FOREIGN KEY (id_ad) REFERENCES ads(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (id_client) REFERENCES clients(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+\echo 'Created reservations table'
 
 -- Adimages
 CREATE TABLE IF NOT EXISTS adimages(
