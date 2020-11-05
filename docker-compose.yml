@@ -13,8 +13,3 @@ services:
       - "8080:8080"
     depends_on:
       - db
-  client:
-    image: "client"
-    network_mode: host
-    depends_on:
-      - server

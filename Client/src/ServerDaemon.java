@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class ServerDaemon {
+
     // Attributes
     private BufferedReader reader;
     private PrintWriter writer;
@@ -19,6 +20,7 @@ public class ServerDaemon {
         }
     }
 
+    // Authenticate a client
     public boolean authenticate(){
         // Variables
         Scanner reader;
@@ -28,8 +30,8 @@ public class ServerDaemon {
 
         // Get the users input
         reader = new Scanner(System.in);
-        System.out.print("Do: ");
         do {
+            System.out.print("Please enter a valid operation (1/2): ");
             choice = reader.nextLine();
         } while (!choice.equals("1") && !choice.equals("2"));
 
@@ -53,6 +55,7 @@ public class ServerDaemon {
         return true;
     }
 
+    // Log in an existing client
     private int logIn(){
         String logInRequest = "LOGIN";
         int response = 0;
@@ -64,7 +67,6 @@ public class ServerDaemon {
         logInRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your password: ");
         logInRequest += "|" + scanner.nextLine();
-        System.out.println(logInRequest);
 
         this.writer.write(logInRequest + "\n");
         writer.flush();
@@ -78,6 +80,7 @@ public class ServerDaemon {
         return response;
     }
 
+    // Sign up a new client
     private int signUp(){
         String signUpRequest = "SIGNUP";
         int response = 0;
@@ -115,18 +118,27 @@ public class ServerDaemon {
         return response;
     }
 
+    // Choose the operation to execute based on client choice
     public boolean chooseAction() {
         Requests[] requestsTab = Requests.values();
-        int i =1;
+        int operationIndex = 1;
         Client.clearScreen();
-        for(Requests requests : requestsTab)
-        {
-            System.out.println(i + " - " + requests.getInformation());
-            i++;
+        for(Requests requests : requestsTab) {
+            System.out.println(operationIndex + " - " + requests.getInformation());
+            operationIndex++;
         }
-        Scanner scanner = new Scanner(System.in);
-        i = Integer.parseInt(scanner.nextLine());
-        switch (requestsTab[i-1])
+
+        do{
+            System.out.print("Please enter a valid operation: ");
+            Scanner scanner = new Scanner(System.in);
+            try{
+                operationIndex = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e){
+                operationIndex = -1;
+            }
+        } while ((operationIndex <= 0) || (operationIndex > requestsTab.length));
+
+        switch (requestsTab[operationIndex - 1])
         {
             case GETADS:{
                 String ads = this.getAds();
@@ -191,6 +203,7 @@ public class ServerDaemon {
 
             case LOGOUT:{
                 System.out.println("Logged Out");
+                System.out.println("Sad to see you go :(");
                 return false;
             }
 
@@ -231,6 +244,7 @@ public class ServerDaemon {
         return true;
     }
 
+    // Get existing adds
     private String getAds() {
         String getAdsRequest = Requests.GETADS.getStringValue();
         Client.clearScreen();
@@ -265,6 +279,7 @@ public class ServerDaemon {
         return ads;
     }
 
+    // Get an existing ad
     public String getAd(){
         String getAdRequest = Requests.GETAD.getStringValue();
         Client.clearScreen();
@@ -295,6 +310,7 @@ public class ServerDaemon {
         return ad;
     }
 
+    // Add a new ad
     public int addAd()
     {
         int response = 0;
@@ -321,6 +337,7 @@ public class ServerDaemon {
         return response;
     }
 
+    // Update an existing update
     public boolean updateAd(){
         String updateAdRequest = Requests.UPDATEAD.getStringValue();
         Client.clearScreen();
@@ -348,6 +365,7 @@ public class ServerDaemon {
         return false;
     }
 
+    // Delete an existing add
     public boolean deleteAd(){
         String deleteAdRequest = Requests.DELETEAD.getStringValue();
         Client.clearScreen();
@@ -367,6 +385,7 @@ public class ServerDaemon {
         return false;
     }
 
+    // Get all reserved adds
     public String getReservedAds(){
         String getReservedAdsRequest = Requests.GETRESERVEDADS.getStringValue();
         Client.clearScreen();
@@ -394,6 +413,7 @@ public class ServerDaemon {
         return ads;
     }
 
+    // Reserve or un reserve an ad
     public boolean resUnresAd(boolean reserve){
         String resUnresAdRequest;
         if(reserve)
@@ -417,6 +437,7 @@ public class ServerDaemon {
         return false;
     }
 
+    // Get an existing clients info
     public String getClientInfo(){
         String clientInfo = "null";
         String infoClientRequest = Requests.GETCLIENTINFO.getStringValue();
@@ -443,6 +464,7 @@ public class ServerDaemon {
         return clientInfo;
     }
 
+    // Update an existing client
     public boolean updateClient()
     {
         String updateClient = Requests.UPDATECLIENT.getStringValue();
@@ -481,6 +503,8 @@ public class ServerDaemon {
         }
         return false;
     }
+
+    // Delete an existing client
     public boolean deleteClient(){
         String deleteClientRequest = Requests.DELETECLIENT.getStringValue();
         Client.clearScreen();
@@ -501,8 +525,9 @@ public class ServerDaemon {
         return false;
     }
 
+    // Read messages from the server
     public void readMessages(){
-        // Variables
+
         String message;
 
         // Print messages

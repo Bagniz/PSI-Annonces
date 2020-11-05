@@ -25,17 +25,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="286cb722-b8b6-457f-bc7a-3b1712344281" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../Server/src/Requests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Requests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Requests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ServerDaemon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServerDaemon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Database/createTables.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/createTables.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Database/createTriggers.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/createTriggers.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Database/insertData.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/insertData.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/ConnectionsCleaner.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ConnectionsCleaner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Client.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Client.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Server.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Server.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -100,17 +102,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Client" />
@@ -138,6 +129,8 @@
       <workItem from="1603839260543" duration="1211000" />
       <workItem from="1603840637740" duration="8000" />
       <workItem from="1604333811465" duration="6499000" />
+      <workItem from="1604593789865" duration="7399000" />
+      <workItem from="1604602209210" duration="5000" />
     </task>
     <servers />
   </component>
@@ -190,25 +183,25 @@
     </state>
     <state x="631" y="166" width="637" height="748" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1603827071966" />
     <state x="494" y="141" width="424" height="513" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1603196335773" />
-    <state width="1878" height="286" key="GridCell.Tab.0.bottom" timestamp="1604341594377">
+    <state width="1878" height="286" key="GridCell.Tab.0.bottom" timestamp="1604602196912">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="286" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1604341594377" />
+    <state width="1878" height="286" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1604602196912" />
     <state width="1253" height="175" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
-    <state width="1878" height="286" key="GridCell.Tab.0.center" timestamp="1604341594376">
+    <state width="1878" height="286" key="GridCell.Tab.0.center" timestamp="1604602196912">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="286" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1604341594376" />
+    <state width="1878" height="286" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1604602196912" />
     <state width="1253" height="175" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
-    <state width="1878" height="286" key="GridCell.Tab.0.left" timestamp="1604341594375">
+    <state width="1878" height="286" key="GridCell.Tab.0.left" timestamp="1604602196911">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="286" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1604341594375" />
+    <state width="1878" height="286" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1604602196911" />
     <state width="1253" height="175" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1603214098956" />
-    <state width="1878" height="286" key="GridCell.Tab.0.right" timestamp="1604341594376">
+    <state width="1878" height="286" key="GridCell.Tab.0.right" timestamp="1604602196912">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1878" height="286" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1604341594376" />
+    <state width="1878" height="286" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1604602196912" />
     <state width="1253" height="175" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1603214098957" />
     <state x="195" y="0" width="1024" height="741" key="SettingsEditor" timestamp="1603723326408">
       <screen x="0" y="0" width="1920" height="1080" />
@@ -219,6 +212,10 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="459" y="278" width="992" height="619" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1080@0.0.1920.1080" timestamp="1603834792765" />
+    <state x="693" y="303" width="524" height="466" key="extract.method.dialog" timestamp="1604597537552">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="693" y="303" width="524" height="466" key="extract.method.dialog/0.0.1920.1080@0.0.1920.1080" timestamp="1604597537552" />
     <state x="67" y="100" width="1289" height="592" key="new project wizard" timestamp="1603210201422">
       <screen x="67" y="27" width="1299" height="741" />
     </state>

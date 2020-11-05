@@ -4,47 +4,52 @@ import java.util.Scanner;
 
 public class Client {
 
+    // Clear the console screen
     public static void clearScreen() {
+        System.out.println();
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
     public static void main(String[] args){
-
-        // Variables
         Socket serverConnectionSocket;
         File serverConfigFile;
         Scanner reader;
 
         // Open configuration file
-        serverConfigFile = new File("serverConfig.txt");
-        while(true){
-            try {
-                // Read configuration file
-                reader = new Scanner(serverConfigFile);
-                String[] config = reader.nextLine().split(":");
-                reader.close();
-
-                // Connect to server
-                serverConnectionSocket = new Socket(config[1],Integer.parseInt(config[2]));
-                System.out.println("Connected to server");
-                break;
-            } catch (IOException  ignore) {}
+        serverConfigFile = new File("../config/serverConfig.txt");
+        if(!serverConfigFile.exists()){
+            System.out.println("Configuration file does not exist");
         }
-
-        // Create a daemon to connected to the server
-        ServerDaemon serverDaemon = new ServerDaemon(serverConnectionSocket);
-
-        // Authenticate to the server
-        if(serverDaemon.authenticate()) {
-            System.out.println("Hello there, here are some commands try them");
+        else{
             while(true){
-                if(!serverDaemon.chooseAction())
+                try {
+                    // Read configuration file
+                    reader = new Scanner(serverConfigFile);
+                    String[] config = reader.nextLine().split(":");
+                    reader.close();
+
+                    // Connect to server
+                    serverConnectionSocket = new Socket(config[1], Integer.parseInt(config[2]));
+                    System.out.println("Connected to server");
                     break;
+                } catch (IOException  ignore) {}
             }
-        }
-        else {
-            System.out.println("Bye Bye");
+
+            // Create a daemon to connected to the server
+            ServerDaemon serverDaemon = new ServerDaemon(serverConnectionSocket);
+
+            // Authenticate to the server
+            if(serverDaemon.authenticate()) {
+                System.out.print("Hello there, what do you want to do (Number): ");
+                while(true){
+                    if(!serverDaemon.chooseAction())
+                        break;
+                }
+            }
+            else {
+                System.out.println("Sad to see you go :(");
+            }
         }
     }
 }

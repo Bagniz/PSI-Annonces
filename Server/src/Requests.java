@@ -1,4 +1,6 @@
 public enum Requests {
+    SIGNUP("SIGNUP", "Sign up a new client"),
+    LOGIN("LOGIN", "Log in an existing client"),
     GETADS("GETADS", "Get available ads"),
     GETAD("GETAD", "Get information of an ad"),
     ADDAD("ADDAD", "Add a new Ad"),
@@ -9,13 +11,13 @@ public enum Requests {
     UNRESERVEAD("UNRESERVEAD", "Unreserve an ad"),
     GETCLIENTINFO("GETCLIENTINFO", "Get your personnel information"),
     UPDATECLIENT("UPDATECLIENT","Update your personnel information"),
-    DELETECLIENT("DELETECLIENT","Delete your account"),
-    LOGOUT("LOGOUT", "Log out");
+    DELETECLIENT("DELETECLIENT","Delete your account");
 
     private final String stringValue;
     private final String information;
 
-    Requests(String stringValue, String information) {
+    Requests(String stringValue, String information)
+    {
         this.stringValue = stringValue;
         this.information = information;
     }

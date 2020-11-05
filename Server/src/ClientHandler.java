@@ -5,24 +5,26 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class ClientHandler extends Thread{
+
     // Attributes
     private final Socket clientConnection;
     private final Database database;
     private OutputStreamWriter writer;
     private BufferedReader reader;
+    private Requests requestCode;
     private int clientId;
 
     // Constructor
     public ClientHandler(Socket clientConnection, Database database)
     {
-        // Attributes
         this.clientConnection = clientConnection;
         this.database = database;
+        this.requestCode = null;
         try {
             this.writer = new OutputStreamWriter((clientConnection.getOutputStream()));
             this.reader = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Could not get client input/output stream");
         }
     }
 
@@ -31,19 +33,86 @@ public class ClientHandler extends Thread{
     }
 
     public void run(){
+        // Client authentication menu
+        clientAuthenticationMenu();
+
         // Authenticating new clients
         this.authenticateClient();
+
+        // Listen to clients requests
         this.requestListener();
     }
 
+    // Send SignUp and LogIn menu
+    private void clientAuthenticationMenu(){
+        try {
+            this.writer.write("Hello there, What do you want to do ?\n");
+            this.writer.write("1. Log in\n");
+            this.writer.write("2. Sign up\n");
+            this.writer.write("\r\n");
+            this.writer.flush();
+        } catch (IOException exception) {
+            System.out.println("Could not send client authentication menu");
+        }
+    }
+
+    // Authenticating new clients (Log In/Sign Up)
+    private void authenticateClient(){
+        String[] request;
+        int idClient;
+
+        try {
+            // Wait for clients request and execute the right operation
+            request = this.reader.readLine().split("\\|");
+            this.requestCode = Requests.valueOf(request[0]);
+            switch (this.requestCode){
+                case SIGNUP:{
+                    idClient = database.signUp(request[1], request[2], request[3], request[4], request[5], request[6], Integer.parseInt(request[7]), request[8], request[9]);
+                    this.clientId = idClient;
+
+                    this.writer.write(idClient + "\n");
+                    this.writer.flush();
+                    break;
+                }
+                case LOGIN:{
+                    idClient = database.logIn(request[1], request[2]);
+                    this.clientId = idClient;
+
+                    this.writer.write(idClient + "\n");
+                    this.writer.flush();
+                    break;
+                }
+                default:{
+                    idClient = -1;
+
+                    this.writer.write(idClient + "\n");
+                    this.writer.flush();
+                    break;
+                }
+            }
+        } catch (Exception exception) {
+            System.out.println("Could not send authentication response to client");
+            idClient = -1;
+            try {
+                this.writer.write(idClient + "\n");
+                this.writer.flush();
+            } catch (IOException ignore) {}
+        }
+
+
+    }
+
+    // Listen to an authenticated clients requests
     private void requestListener() {
         String request;
+
         while (true) {
             try {
-                if (((request = this.reader.readLine()) != null)) {
+                if ((request = this.reader.readLine()) != null) {
                     String [] requestTab = request.split("\\|");
-                    switch (requestTab[0]){
-                        case "GETADS":{
+                    this.requestCode = Requests.valueOf(requestTab[0]);
+                    switch (this.requestCode){
+                        case GETADS:{
                             String ads = database.getAds(Boolean.parseBoolean(requestTab[1]), clientId);
                             if(ads.equals("null"))
                                 this.writer.write("There are no ads\n");
@@ -53,7 +122,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "GETAD":{
+                        case GETAD:{
                             String ad = database.getAnAd(Integer.parseInt(requestTab[1]));
                             if(ad.equals("null"))
                                 this.writer.write("Ad of id: " + requestTab[1] + " does not exist\n");
@@ -63,7 +132,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "ADDAD":{
+                        case ADDAD:{
                             int id = database.addAd(requestTab[1],requestTab[2],Float.parseFloat(requestTab[3]),Integer.parseInt(requestTab[4]), clientId);
                             System.out.println(id);
                             this.writer.write(id + "\n");
@@ -71,7 +140,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "UPDATEAD":{
+                        case UPDATEAD:{
                             if(database.updateAd(Integer.parseInt(requestTab[1]), requestTab[2], requestTab[3], Float.parseFloat(requestTab[4]), Integer.parseInt(requestTab[5]), clientId))
                                 this.writer.write("success\n");
                             else
@@ -80,7 +149,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "DELETEAD":{
+                        case DELETEAD:{
                             if(database.deleteAd(Integer.parseInt(requestTab[1]), clientId))
                                 this.writer.write("success\n");
                             else
@@ -89,7 +158,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "GETRESERVEDADS":{
+                        case GETRESERVEDADS:{
                             String ads = database.getReservedAds(clientId);
                             if(ads.equals("null"))
                                 this.writer.write("There are no ads\n");
@@ -99,7 +168,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "RESERVEAD":{
+                        case RESERVEAD:{
                             if(database.reserveAd(Integer.parseInt(requestTab[1]), clientId))
                                 this.writer.write("success\n");
                             else
@@ -108,7 +177,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "UNRESERVEAD":{
+                        case UNRESERVEAD:{
                             if(database.unReserveAd(Integer.parseInt(requestTab[1]), clientId))
                                 this.writer.write("success\n");
                             else
@@ -117,7 +186,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "GETCLIENTINFO":{
+                        case GETCLIENTINFO:{
                             String[] clientInfo = this.database.getClientInformation(clientId);
                             if(clientInfo[0] == null){
                                 this.writer.write("Account does not exist");
@@ -137,7 +206,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "UPDATECLIENT":{
+                        case UPDATECLIENT:{
                             String[] clientInformationTab = database.getClientInformation(Integer.parseInt(requestTab[11]));
                             int k=1;
                             for (int i =0;i<9;i++)
@@ -162,7 +231,7 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
-                        case "DELETECLIENT":{
+                        case DELETECLIENT:{
                             if(database.deleteClient(requestTab[1],Integer.parseInt(requestTab[2])))
                                 this.writer.write("success\n");
                             else
@@ -180,49 +249,8 @@ public class ClientHandler extends Thread{
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Could not send response to client");
             }
-        }
-    }
-
-    private void authenticateClient(){
-        // Variables
-        int id;
-
-        try {
-            // Send SignUp and LogIn menu
-            this.writer.write("Hello there, What do you want to do ?\n");
-            this.writer.write("1. Log in\n");
-            this.writer.write("2. Sign up\n");
-            this.writer.write("\r\n");
-            this.writer.flush();
-
-            // Wait for clients response and call the right method
-            String[] request = this.reader.readLine().split("\\|");
-            switch (request[0]){
-                case "SIGNUP":{
-                    id = database.signUp(request[1], request[2], request[3], request[4], request[5], request[6], Integer.parseInt(request[7]), request[8], request[9]);
-                    this.clientId = id;
-                    this.writer.write(id + "\n");
-                    this.writer.flush();
-                    break;
-                }
-                case "LOGIN":{
-                    id = database.logIn(request[1], request[2]);
-                    this.clientId = id;
-                    this.writer.write(id + "\n");
-                    this.writer.flush();
-                    break;
-                }
-                default:{
-                    id = -1;
-                    this.writer.write(id + "\n");
-                    this.writer.flush();
-                    break;
-                }
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
     }
 }

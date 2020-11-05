@@ -1,9 +1,3 @@
-FROM openjdk as client
-WORKDIR /
-ADD app/Client.jar Client.jar
-ADD config/serverConfig.txt serverConfig.txt
-CMD ["java","-jar","Client.jar"]
-
 FROM openjdk as server
 WORKDIR /
 ADD app/Server.jar Server.jar
