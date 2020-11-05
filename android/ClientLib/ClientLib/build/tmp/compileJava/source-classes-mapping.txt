@@ -1,5 +1,0 @@
-client/lib/ServerDaemon.java
- client.lib.ServerDaemon
- client.lib.ServerDaemon$1
-client/lib/Requests.java
- client.lib.Requests

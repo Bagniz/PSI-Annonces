@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="client.lib.ServerDaemonTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-11-02T20:43:35" hostname="kouadri-Aspire-E5-573" time="0.01">
-  <properties/>
-  <testcase name="test" classname="client.lib.ServerDaemonTest" time="0.01"/>
-  <system-out><![CDATA[ca marche 
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
