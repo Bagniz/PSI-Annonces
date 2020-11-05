@@ -25,20 +25,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="286cb722-b8b6-457f-bc7a-3b1712344281" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../Server/src/Requests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Client/Client.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Requests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Requests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ServerDaemon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServerDaemon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/createTables.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/createTables.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/insertData.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/insertData.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/src/ConnectionsCleaner.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ConnectionsCleaner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/Database.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/src/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/Client.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Client.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../app/Server.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Server.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,6 +122,7 @@
       <workItem from="1604333811465" duration="6499000" />
       <workItem from="1604593789865" duration="7399000" />
       <workItem from="1604602209210" duration="5000" />
+      <workItem from="1604607122935" duration="2000" />
     </task>
     <servers />
   </component>

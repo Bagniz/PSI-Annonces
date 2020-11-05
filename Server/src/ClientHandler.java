@@ -133,7 +133,7 @@ public class ClientHandler extends Thread{
                         }
 
                         case ADDAD:{
-                            int id = database.addAd(requestTab[1],requestTab[2],requestTab[3],Integer.parseInt(requestTab[4]), clientId);
+                            int id = database.addAd(requestTab[1],requestTab[2],Float.parseFloat(requestTab[3]),Integer.parseInt(requestTab[4]), clientId);
                             System.out.println(id);
                             this.writer.write(id + "\n");
                             this.writer.flush();
