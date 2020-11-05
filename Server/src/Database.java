@@ -198,7 +198,7 @@ public class Database {
     }
 
     // Add an ad
-    public int addAd(String title, String description, float price, int idCat, int postedBy)
+    public int addAd(String title, String description, String price, int idCat, int postedBy)
     {
         int idAd = 0;
         String addAdQuery = "INSERT INTO ads (title,description,price,id_cat,posted_by) VALUES (?,?,?,?,?)";
@@ -206,7 +206,7 @@ public class Database {
             this.statement = this.connection.prepareStatement(addAdQuery, Statement.RETURN_GENERATED_KEYS);
             this.statement.setString(1, title);
             this.statement.setString(2, description);
-            this.statement.setFloat(3, price);
+            this.statement.setString(3, price);
             this.statement.setInt(4, idCat);
             this.statement.setInt(5, postedBy);
             int affectedRows = this.statement.executeUpdate();
