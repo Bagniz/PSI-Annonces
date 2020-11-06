@@ -263,10 +263,11 @@ public class ServerDaemon {
             String[] response = reader.readLine().split("\\|");
             StringBuilder adsBuilder = new StringBuilder();
             if(response.length > 1){
-                for(int i = 0; i < response.length; i += 3){
+                for(int i = 0; i < response.length; i += 4){
                     adsBuilder.append("Id: ").append(response[i]).append("\n");
                     adsBuilder.append("Title: ").append(response[i+1]).append("\n");
                     adsBuilder.append("Description: ").append(response[i+2]).append("\n");
+                    adsBuilder.append("Price: ").append(response[i+3]).append("\n");
                 }
                 ads = adsBuilder.toString();
             }
@@ -397,10 +398,11 @@ public class ServerDaemon {
             String[] response = reader.readLine().split("\\|");
             StringBuilder adsBuilder = new StringBuilder();
             if(response.length > 1){
-                for(int i = 0; i < response.length; i += 3){
+                for(int i = 0; i < response.length; i += 4){
                     adsBuilder.append("Id: ").append(response[i]).append("\n");
                     adsBuilder.append("Title: ").append(response[i+1]).append("\n");
                     adsBuilder.append("Description: ").append(response[i+2]).append("\n");
+                    adsBuilder.append("Price: ").append(response[i+3]).append("\n");
                 }
                 ads = adsBuilder.toString();
             }

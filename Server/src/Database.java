@@ -143,6 +143,7 @@ public class Database {
                     ads.append(this.resultSet.getString("id"));
                     ads.append("|").append(this.resultSet.getString("title"));
                     ads.append("|").append(this.resultSet.getString("description"));
+                    ads.append("|").append(this.resultSet.getString("price"));
                     if(this.resultSet.next())
                         ads.append("|");
                     else
@@ -271,6 +272,7 @@ public class Database {
                     ads.append(this.resultSet.getString("id"));
                     ads.append("|").append(this.resultSet.getString("title"));
                     ads.append("|").append(this.resultSet.getString("description"));
+                    ads.append("|").append(this.resultSet.getString("price"));
                     if(this.resultSet.next())
                         ads.append("|");
                     else
