@@ -1,4 +1,0 @@
-#Tue Nov 03 13:49:53 CET 2020
-base.0=/home/kouadri/AndroidStudioProjects/PSI/app/build/intermediates/dex/debug/mergeDexDebug/out/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
