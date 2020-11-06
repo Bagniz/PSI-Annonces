@@ -1,9 +1,16 @@
 # Annonces
 
+## How can we run the code ?
+* To run our code you have to follow these steps:
+* Step One: You have to download docker PS (the version we are using is 19.03.13) then you have to download also docker-compose PS (the version we are using is 1.27.4)
+* Step Two: Once step one is finished, you have to download the image of openjdk and postgres in docker.
+* Step Three: And now you only have to do a bash run.sh and the server and the database containers will be launched.
+* Step Four: You can run the .jar of the client and start testing our application.
+
 ## Useful Commands 
-* Connect to container:
+* Connect to the database container:
 ```bash
-	psql -h 10.188.41.217  -p 5432 -U postgres -W
+	psql -h yourIP  -p 5432 -U postgres -W
 ```
 
 * Afficher utilisateur du port :
