@@ -1,6 +1,6 @@
 # Annonces
 
-## How can we run the code ?
+## How can we run the Application ?
  To run our code you have to follow these steps:
 * Step One: 
 ``` You have to download docker PS (the version we are using is 19.03.13) then you have to download also docker-compose PS (the version we are using is 1.27.4).```
