@@ -9,10 +9,12 @@ public class Server {
         try {
             // Connecting to database
             Database database = new Database();
-            if(database.connectToDB())
-                System.out.println(database.getDbVersion());
+            if(database.connectToDB()) {
+                System.out.println("Connected to database");
+                System.out.println("Database version: " + database.getDbVersion());
+            }
             else
-                System.out.println("Error while connecting to database");
+                System.out.println("Could not connect to database");
 
             // Create a connection cleaner
             ConnectionsCleaner connectionsCleaner = new ConnectionsCleaner(clients);
@@ -21,7 +23,7 @@ public class Server {
             // Starting server
             System.out.println("Starting the server");
             ServerSocket serverSocket = new ServerSocket(8080);
-            System.out.println("Server started at address: " + serverSocket.getInetAddress());
+            System.out.println("Server started at address: " + serverSocket.getLocalSocketAddress());
 
             while (true) {
                 // Wait for new clients
@@ -30,7 +32,7 @@ public class Server {
                 clients.get(clients.size() - 1).start();
             }
         } catch (IOException e) {
-            System.out.println("Connection problem");
+            System.out.println("Could not start the server");
         }
     }
 }

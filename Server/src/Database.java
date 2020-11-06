@@ -21,24 +21,25 @@ public class Database {
     public boolean connectToDB(){
         try {
             Class.forName("org.postgresql.Driver");
+
             File dbConfigFile = new File("dbConfig.txt");
             Scanner reader = new Scanner(dbConfigFile);
             String[] dbConfig = reader.nextLine().split(":");
             reader.close();
-            String dbUrl = "jdbc:postgresql://localhost:" + dbConfig[2] + "/" + dbConfig[3];
-            System.out.println(dbUrl);
+
+            String dbUrl = "jdbc:postgresql://"+ dbConfig[1] + ":" + dbConfig[2] + "/" + dbConfig[3];
+
             Properties dbProperties = new Properties();
             dbProperties.setProperty("user","postgres");
             dbProperties.setProperty("password","postgres");
             dbProperties.setProperty("ssl","false");
+
             while (this.connection == null){
                 try {
                     this.connection = DriverManager.getConnection(dbUrl, dbProperties);
                 } catch (SQLException ignore){}
             }
-            System.out.println("Connected to the database");
         } catch (ClassNotFoundException | FileNotFoundException exception) {
-            exception.printStackTrace();
             return false;
         }
         return true;
@@ -55,7 +56,7 @@ public class Database {
                 if(this.resultSet.next())
                     version = this.resultSet.getString("version");
             } catch (SQLException exception) {
-                exception.printStackTrace();
+                System.out.println("Could not get database version");
             }
         }
         return version;
@@ -81,7 +82,7 @@ public class Database {
         if(this.doesClientExist(email))
             return -1;
         else{
-            int idClient = 0;
+            int idClient = -1;
             String signUpQuery = "INSERT INTO clients (first_name, last_name, birthdate, email, password, address, postal_code, city, phone_number, is_active) VALUES (?,?,?,?,?,?,?,?,?,true)";
             try {
                 this.statement = this.connection.prepareStatement(signUpQuery, Statement.RETURN_GENERATED_KEYS);
@@ -109,7 +110,7 @@ public class Database {
 
     // Verify the existence of a client
     public int logIn(String email,String password){
-        int idClient = 0;
+        int idClient = -1;
         String logInQuery = "SELECT id FROM clients WHERE email = ? AND password = crypt(?, 'md5')";
         try {
             this.statement = this.connection.prepareStatement(logInQuery);
@@ -142,6 +143,7 @@ public class Database {
                     ads.append(this.resultSet.getString("id"));
                     ads.append("|").append(this.resultSet.getString("title"));
                     ads.append("|").append(this.resultSet.getString("description"));
+                    ads.append("|").append(this.resultSet.getString("price"));
                     if(this.resultSet.next())
                         ads.append("|");
                     else
@@ -270,6 +272,7 @@ public class Database {
                     ads.append(this.resultSet.getString("id"));
                     ads.append("|").append(this.resultSet.getString("title"));
                     ads.append("|").append(this.resultSet.getString("description"));
+                    ads.append("|").append(this.resultSet.getString("price"));
                     if(this.resultSet.next())
                         ads.append("|");
                     else

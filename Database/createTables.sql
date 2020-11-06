@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS ads(
     id SERIAL,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    price MONEY NOT NULL CHECK ( price >= MONEY(0.0) ),
+    price REAL NOT NULL CHECK ( price >= 0.0 ),
     id_cat INTEGER NOT NULL,
     posted_by INTEGER NOT NULL,
     posting_date TIMESTAMP NOT NULL CHECK ( posting_date <= CURRENT_TIMESTAMP ) DEFAULT CURRENT_TIMESTAMP,
