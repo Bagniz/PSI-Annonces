@@ -10,6 +10,8 @@
 ``` And now you only have to do a bash run.sh and the server and the database containers will be launched.```
 * Step Four: 
 ``` You can run the .jar of the client and start testing our application.```
+* Step Five: 
+``` You can run the rin.sh to undo what run.sh did .```
 
 ## Useful Commands 
 * Connect to the database container:
