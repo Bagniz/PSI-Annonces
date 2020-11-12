@@ -1,255 +1,179 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ClientHandler extends Thread{
-
-    // Attributes
     private final Socket clientConnection;
     private final Database database;
-    private OutputStreamWriter writer;
-    private BufferedReader reader;
-    private Requests requestCode;
-    private int clientId;
+    private final ObjectOutputStream writer;
+    private final ObjectInputStream reader;
+    private Request request;
+    private Client client;
 
-    // Constructor
-    public ClientHandler(Socket clientConnection, Database database)
-    {
+    public ClientHandler(Socket clientConnection, Database database) throws IOException {
         this.clientConnection = clientConnection;
         this.database = database;
-        this.requestCode = null;
-        try {
-            this.writer = new OutputStreamWriter((clientConnection.getOutputStream()));
-            this.reader = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
-        } catch (IOException e) {
-            System.out.println("Could not get client input/output stream");
-        }
+        this.writer = new ObjectOutputStream(this.clientConnection.getOutputStream());
+        this.reader = new ObjectInputStream(this.clientConnection.getInputStream());
     }
 
     public Socket getClientConnection(){
         return this.clientConnection;
     }
 
-    public void run(){
-        // Client authentication menu
-        clientAuthenticationMenu();
-
-        // Authenticating new clients
-        this.authenticateClient();
-
-        // Listen to clients requests
-        this.requestListener();
-    }
-
-    // Send SignUp and LogIn menu
-    private void clientAuthenticationMenu(){
+    @Override
+    public void run() {
         try {
-            this.writer.write("Hello there, What do you want to do ?\n");
-            this.writer.write("1. Log in\n");
-            this.writer.write("2. Sign up\n");
-            this.writer.write("\r\n");
-            this.writer.flush();
-        } catch (IOException exception) {
-            System.out.println("Could not send client authentication menu");
-        }
-    }
-
-    // Authenticating new clients (Log In/Sign Up)
-    private void authenticateClient(){
-        String[] request;
-        int idClient;
-
-        try {
-            // Wait for clients request and execute the right operation
-            request = this.reader.readLine().split("\\|");
-            this.requestCode = Requests.valueOf(request[0]);
-            switch (this.requestCode){
-                case SIGNUP:{
-                    idClient = database.signUp(request[1], request[2], request[3], request[4], request[5], request[6], Integer.parseInt(request[7]), request[8], request[9]);
-                    this.clientId = idClient;
-
-                    this.writer.write(idClient + "\n");
-                    this.writer.flush();
-                    break;
-                }
-                case LOGIN:{
-                    idClient = database.logIn(request[1], request[2]);
-                    this.clientId = idClient;
-
-                    this.writer.write(idClient + "\n");
-                    this.writer.flush();
-                    break;
-                }
-                default:{
-                    idClient = -1;
-
-                    this.writer.write(idClient + "\n");
-                    this.writer.flush();
-                    break;
-                }
+            this.authenticateClient();
+            this.handleClient();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Response response = new Response();
+            response.setMessage("Exception was raised");
+            try {
+                this.writer.writeObject(response);
+            } catch (IOException ioException) {
+                System.out.println("Client disconnected");
             }
-        } catch (Exception exception) {
-            System.out.println("Could not send authentication response to client");
-            idClient = -1;
-            try {
-                this.writer.write(idClient + "\n");
-                this.writer.flush();
-            } catch (IOException ignore) {}
         }
-
-
     }
 
-    // Listen to an authenticated clients requests
-    private void requestListener() {
-        String request;
+    private void authenticateClient() throws IOException, ClassNotFoundException {
+        request = (Request) this.reader.readObject();
+        switch (request.getCommand()){
+            case SIGNUP:{
+                Response response = database.SignUp(request.getClient().getFirstName(),
+                        request.getClient().getLastName(),
+                        request.getClient().getBirthdate(),
+                        request.getClient().getEmail(),
+                        request.getClient().getPassword(),
+                        request.getClient().getAddress(),
+                        request.getClient().getPostalCode(),
+                        request.getClient().getCity(),
+                        request.getClient().getPhoneNumber());
+                this.client = response.getClient();
+                this.writer.writeObject(response);
+                break;
+            }
 
-        while (true) {
-            try {
-                if ((request = this.reader.readLine()) != null) {
-                    String [] requestTab = request.split("\\|");
-                    this.requestCode = Requests.valueOf(requestTab[0]);
-                    switch (this.requestCode){
-                        case GETADS:{
-                            String ads = database.getAds(Boolean.parseBoolean(requestTab[1]), clientId);
-                            if(ads.equals("null"))
-                                this.writer.write("There are no ads\n");
-                            else
-                                this.writer.write(ads + "\n");
-                            this.writer.flush();
-                            break;
-                        }
+            case LOGIN:{
+                Response response = database.logIn(request.getClient().getEmail(), request.getClient().getPassword());
+                this.client = response.getClient();
+                this.writer.writeObject(response);
+                break;
+            }
 
-                        case GETAD:{
-                            String ad = database.getAnAd(Integer.parseInt(requestTab[1]));
-                            if(ad.equals("null"))
-                                this.writer.write("Ad of id: " + requestTab[1] + " does not exist\n");
-                            else
-                                this.writer.write(ad + "\n");
-                            this.writer.flush();
-                            break;
-                        }
+            default:{
+                Response response = new Response();
+                response.setMessage("Wrong command");
+                this.writer.writeObject(response);
+                break;
+            }
+        }
+    }
 
-                        case ADDAD:{
-                            int id = database.addAd(requestTab[1],requestTab[2],Float.parseFloat(requestTab[3]),Integer.parseInt(requestTab[4]), clientId);
-                            System.out.println(id);
-                            this.writer.write(id + "\n");
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case UPDATEAD:{
-                            if(database.updateAd(Integer.parseInt(requestTab[1]), requestTab[2], requestTab[3], Float.parseFloat(requestTab[4]), Integer.parseInt(requestTab[5]), clientId))
-                                this.writer.write("success\n");
-                            else
-                                this.writer.write("error\n");
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case DELETEAD:{
-                            if(database.deleteAd(Integer.parseInt(requestTab[1]), clientId))
-                                this.writer.write("success\n");
-                            else
-                                this.writer.write("error\n");
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case GETRESERVEDADS:{
-                            String ads = database.getReservedAds(clientId);
-                            if(ads.equals("null"))
-                                this.writer.write("There are no ads\n");
-                            else
-                                this.writer.write(ads + "\n");
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case RESERVEAD:{
-                            if(database.reserveAd(Integer.parseInt(requestTab[1]), clientId))
-                                this.writer.write("success\n");
-                            else
-                                this.writer.write("error\n");
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case UNRESERVEAD:{
-                            if(database.unReserveAd(Integer.parseInt(requestTab[1]), clientId))
-                                this.writer.write("success\n");
-                            else
-                                this.writer.write("error\n");
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case GETCLIENTINFO:{
-                            String[] clientInfo = this.database.getClientInformation(clientId);
-                            if(clientInfo[0] == null){
-                                this.writer.write("Account does not exist");
-                            }
-                            else{
-                                StringBuilder clientInfoResponse = new StringBuilder(clientInfo[0]);
-                                for(int i = 1;i < 9; i++){
-                                    if(i == 4)
-                                        continue;
-                                    clientInfoResponse.append("|").append(clientInfo[i]);
-                                }
-                                clientInfoResponse.append("\n");
-
-                                this.writer.write(clientInfoResponse.toString());
-                            }
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case UPDATECLIENT:{
-                            String[] clientInformationTab = database.getClientInformation(Integer.parseInt(requestTab[11]));
-                            int k=1;
-                            for (int i =0;i<9;i++)
-                            {
-                                if(i==5)
-                                {
-                                    k++;
-                                }
-                                if (requestTab[i+k].equals("next"))
-                                {
-                                    requestTab[i+k] = clientInformationTab[i];
-                                }
-                            }
-                            if(database.updateClient(requestTab[1],requestTab[2],requestTab[3],requestTab[4],requestTab[5],requestTab[6],requestTab[7],Integer.parseInt(requestTab[8]),requestTab[9],requestTab[10],Integer.parseInt(requestTab[11])))
-                            {
-                                this.writer.write("success\n");
-                            }
-                            else {
-                                this.writer.write("error\n");
-                            }
-                            this.writer.flush();
-                            break;
-                        }
-
-                        case DELETECLIENT:{
-                            if(database.deleteClient(requestTab[1],Integer.parseInt(requestTab[2])))
-                                this.writer.write("success\n");
-                            else
-                                this.writer.write("error\n");
-                            this.writer.flush();
-                            break;
-                        }
-
-                        default:{
-                            int response = -1;
-                            this.writer.write(response + "\n");
-                            this.writer.flush();
-                            break;
-                        }
-                    }
+    private void handleClient() throws IOException, ClassNotFoundException {
+        while(true){
+            request = (Request) this.reader.readObject();
+            switch (request.getCommand()){
+                case GETADS:{
+                    Response response = database.getAds(request.isAreMine(), this.client.getId());
+                    this.writer.writeObject(response);
+                    break;
                 }
-            } catch (IOException e) {
-                System.out.println("Could not send response to client");
+
+                case GETAD:{
+                    Ad ad = database.getAd(request.getAd().getId());
+                    Response response = new Response();
+                    if(ad == null)
+                        response.setMessage("Ad with id (" + request.getAd().getId() + ") does not exist");
+                    else
+                        response.setAd(ad);
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case ADDAD:{
+                    Response response = database.addAd(request.getAd().getTitle(),
+                            request.getAd().getDescription(),
+                            request.getAd().getPrice(),
+                            request.getAd().getCategory().getId(),
+                            this.client.getId());
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case UPDATEAD:{
+                    Response response = database.updateAd(request.getAd().getId(),
+                            request.getAd().getTitle(),
+                            request.getAd().getDescription(),
+                            request.getAd().getPrice(),
+                            request.getAd().getCategory().getId(),
+                            this.client.getId());
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case DELETEAD:{
+                    Response response = database.deleteAd(request.getAd().getId(), this.client.getId());
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case GETRESERVEDADS:{
+                    Response response = database.getReservedAds(this.client.getId());
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case RESERVEAD:{
+                    Response response = database.reserveAd(request.getAd().getId(), this.client.getId());
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case UNRESERVEAD:{
+                    Response response = database.unReserveAd(request.getAd().getId(), this.client.getId());
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case GETCLIENTINFO:{
+                    Response response = new Response();
+                    response.setClient(this.client);
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case UPDATECLIENT:{
+                    Response response = database.updateClient(request.getClient().getFirstName(),
+                            request.getClient().getLastName(),
+                            request.getClient().getBirthdate(),
+                            request.getClient().getEmail(),
+                            request.getClient().getPassword(),
+                            request.getNewPassword(),
+                            request.getClient().getAddress(),
+                            request.getClient().getPostalCode(),
+                            request.getClient().getCity(),
+                            request.getClient().getPhoneNumber(),
+                            this.client.getId());
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                case DELETECLIENT:{
+                    Response response = database.deleteClient(this.client.getId(), request.getClient().getPassword());
+                    this.writer.writeObject(response);
+                    break;
+                }
+
+                default:{
+                    Response response = new Response();
+                    response.setMessage("Wrong command");
+                    this.writer.writeObject(response);
+                    break;
+                }
             }
         }
     }

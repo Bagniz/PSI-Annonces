@@ -1,239 +1,120 @@
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Objects;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ServerDaemon {
+    private final ObjectInputStream reader;
+    private final ObjectOutputStream writer;
+    private final Scanner scanner;
+    private Request request;
 
-    // Attributes
-    private BufferedReader reader;
-    private PrintWriter writer;
-    private int clientId;
-
-    // Constructor
-    public ServerDaemon(Socket server){
-        try {
-            this.reader = new BufferedReader(new InputStreamReader(server.getInputStream()));
-            this.writer = new PrintWriter(new OutputStreamWriter(server.getOutputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ServerDaemon(Socket server) throws IOException {
+        this.reader = new ObjectInputStream(server.getInputStream());
+        this.writer = new ObjectOutputStream(server.getOutputStream());
+        this.scanner = new Scanner(System.in);
     }
 
-    // Authenticate a client
     public boolean authenticate(){
-        // Variables
-        Scanner reader;
+        System.out.println("Hello there, What do you want to do ?");
+        System.out.println("1. Log In");
+        System.out.println("2. Sign Up");
+
+        System.out.print("Do => ");
         String choice;
-
-        this.readMessages();
-
-        // Get the users input
-        reader = new Scanner(System.in);
         do {
-            System.out.print("Please enter a valid operation (1/2): ");
-            choice = reader.nextLine();
-        } while (!choice.equals("1") && !choice.equals("2"));
-
-        // LogIn or SignUp
+            choice = scanner.nextLine();
+        } while(!choice.equals("1") && !choice.equals("2"));
         if(choice.equals("1")){
-            if((clientId = this.logIn()) <= 0) {
-                System.out.println("LogIn failed");
-                return false;
-            }
+            return this.crudClient(Command.LOGIN);
         }
-        else {
-            if((clientId = this.signUp()) <= 0) {
-                System.out.println("SignUp failed");
-                return false;
-            }
-            else {
-                System.out.println("SignUp succeeded");
-            }
+        else{
+            return this.crudClient(Command.SIGNUP);
         }
-
-        return true;
     }
 
-    // Log in an existing client
-    private int logIn(){
-        String logInRequest = "LOGIN";
-        int response = 0;
-
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Please enter your email: ");
-        logInRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your password: ");
-        logInRequest += "|" + scanner.nextLine();
-
-        this.writer.write(logInRequest + "\n");
-        writer.flush();
-
-        try {
-            response = Integer.parseInt(reader.readLine());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-
-        return response;
-    }
-
-    // Sign up a new client
-    private int signUp(){
-        String signUpRequest = "SIGNUP";
-        int response = 0;
-
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Please enter your first name: ");
-        signUpRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your last name: ");
-        signUpRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your birthday (yyyy-MM-dd): ");
-        signUpRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your email: ");
-        signUpRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your password: ");
-        signUpRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your address: ");
-        signUpRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your postal code: ");
-        signUpRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your city: ");
-        signUpRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter your phone number (+xxx xxx xxx xxxx): ");
-        signUpRequest += "|" + scanner.nextLine();
-
-        this.writer.write(signUpRequest + "\n");
-        writer.flush();
-
-        try {
-            response = Integer.parseInt(reader.readLine());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-
-        return response;
-    }
-
-    // Choose the operation to execute based on client choice
-    public boolean chooseAction() {
-        Requests[] requestsTab = Requests.values();
-        int operationIndex = 1;
-        Client.clearScreen();
-        for(Requests requests : requestsTab) {
-            System.out.println(operationIndex + " - " + requests.getInformation());
-            operationIndex++;
-        }
-
-        do{
-            System.out.print("Please enter a valid operation: ");
-            Scanner scanner = new Scanner(System.in);
-            try{
-                operationIndex = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e){
-                operationIndex = -1;
+    public boolean doAction() throws IOException {
+        int index = 3;
+        Command[] commands = Command.values();
+        for(Command command: commands){
+            if(!(command == Command.LOGIN) && !(command == Command.SIGNUP)) {
+                System.out.println(index + " - " + command.getCommandInformation());
+                index++;
             }
-        } while ((operationIndex <= 0) || (operationIndex > requestsTab.length));
-
-        switch (requestsTab[operationIndex - 1])
-        {
+        }
+        System.out.print("Do => ");
+        index = Integer.parseInt(scanner.nextLine());
+        switch (commands[index - 1]){
             case GETADS:{
-                String ads = this.getAds();
-                System.out.println(Objects.requireNonNullElse(ads, "Operation failed"));
+                this.getAds(Command.GETADS);
                 break;
             }
 
             case GETAD:{
-                String ad = this.getAd();
-                if(ad.equals("null"))
-                    System.out.println("There is no ad that matches the given id");
-                else
-                    System.out.println(ad);
+                this.getAd();
                 break;
             }
 
             case ADDAD:{
-                if (this.addAd() <= 0)
-                    System.out.println("the ad could not be published");
-                else
-                    System.out.println("the ad is published");
+                this.crudAd(Command.ADDAD);
                 break;
             }
 
             case UPDATEAD:{
-                if(this.updateAd())
-                    System.out.println("Ad updated");
-                else
-                    System.out.println("Ad update failed");
+                this.crudAd(Command.UPDATEAD);
                 break;
             }
 
             case DELETEAD:{
-                if(this.deleteAd())
-                    System.out.println("Ad deleted");
-                else
-                    System.out.println("Ad deletion failed");
+                this.crudAd(Command.DELETEAD);
                 break;
             }
 
             case GETRESERVEDADS:{
-                String ads = this.getReservedAds();
-                System.out.println(Objects.requireNonNullElse(ads, "Operation failed"));
+                this.getAds(Command.GETRESERVEDADS);
                 break;
             }
 
             case RESERVEAD:{
-                if(this.resUnresAd(true))
-                    System.out.println("The ad has been reserved");
-                else
-                    System.out.println("Reservation operation failed");
+                this.crudAd(Command.RESERVEAD);
                 break;
             }
 
             case UNRESERVEAD:{
-                if(this.resUnresAd(false))
-                    System.out.println("The ad has been unreserved");
-                else
-                    System.out.println("Unresevation operation failed");
+                this.crudAd(Command.UNRESERVEAD);
                 break;
             }
 
-            case LOGOUT:{
-                System.out.println("Logged Out");
-                System.out.println("Sad to see you go :(");
-                return false;
-            }
-
             case GETCLIENTINFO:{
-                String clientInfo = this.getClientInfo();
-                if(clientInfo.equals("null")){
-                    System.out.println("Operation failed");
-                }
-                else{
-                    System.out.println(clientInfo);
-                }
+                this.getClientInfo();
                 break;
             }
 
             case UPDATECLIENT:{
-                if(this.updateClient())
-                    System.out.println("Client updated");
-                else
-                    System.out.println("Client update failed");
+                this.crudClient(Command.UPDATECLIENT);
                 break;
             }
 
             case DELETECLIENT:{
-                if(this.deleteClient()){
-                    System.out.println("Client account is deleted");
+                if(this.crudClient(Command.DELETECLIENT)){
+                    this.writer.close();
+                    this.reader.close();
+                    this.scanner.close();
                     return false;
                 }
-                else
-                    System.out.println("Client account deletion failed");
                 break;
+            }
+
+            case LOGOUT:{
+                this.writer.close();
+                this.reader.close();
+                this.scanner.close();
+                System.out.println("Logged Out");
+                System.out.println("Sad to see you go :(");
+                return false;
             }
 
             default:{
@@ -244,303 +125,187 @@ public class ServerDaemon {
         return true;
     }
 
-    // Get existing adds
-    private String getAds() {
-        String getAdsRequest = Requests.GETADS.getStringValue();
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Do you want to see your ads (yes|no): ");
-        if(scanner.nextLine().equals("yes"))
-            getAdsRequest += "|" + true;
-        else
-            getAdsRequest += "|" + false;
+    private boolean crudClient(Command command){
+        this.request = new Request();
+        this.request.setCommand(command);
+        Client client = new Client();
+        Response response = new Response();
 
-        this.writer.write(getAdsRequest + "\n");
-        this.writer.flush();
-
-        String ads = null;
-        try {
-            String[] response = reader.readLine().split("\\|");
-            StringBuilder adsBuilder = new StringBuilder();
-            if(response.length > 1){
-                for(int i = 0; i < response.length; i += 4){
-                    adsBuilder.append("Id: ").append(response[i]).append("\n");
-                    adsBuilder.append("Title: ").append(response[i+1]).append("\n");
-                    adsBuilder.append("Description: ").append(response[i+2]).append("\n");
-                    adsBuilder.append("Price: ").append(response[i+3]).append("\n");
-                }
-                ads = adsBuilder.toString();
+        if(command == Command.LOGIN){
+            System.out.print("Please enter your email: ");
+            client.setEmail(scanner.nextLine());
+            System.out.print("Please enter you password: ");
+            client.setPassword(scanner.nextLine());
+        }
+        else if(command == Command.SIGNUP || command == Command.UPDATECLIENT){
+            if(command == Command.UPDATECLIENT){
+                System.out.println("If you don't want to change any field just right next");
+            }
+            System.out.print("Please enter your first name: ");
+            client.setFirstName(scanner.nextLine());
+            System.out.print("Please enter your last name: ");
+            client.setLastName(scanner.nextLine());
+            System.out.print("Please enter your birthday (yyyy-MM-dd): ");
+            client.setBirthdate(Date.valueOf(scanner.nextLine()));
+            System.out.print("Please enter your email: ");
+            client.setEmail(scanner.nextLine());
+            if(command == Command.UPDATECLIENT){
+                System.out.print("Please enter the old password you can't use next here: ");
+                client.setPassword(scanner.nextLine());
+                System.out.print("Please enter the new password if you want: ");
+                request.setNewPassword(scanner.nextLine());
             }
             else{
-                ads = response[0];
+                System.out.print("Please enter your password: ");
+                client.setPassword(scanner.nextLine());
             }
-        } catch (IOException exception) {
-            exception.printStackTrace();
+            System.out.print("Please enter your address: ");
+            client.setAddress(scanner.nextLine());
+            System.out.print("Please enter your postal code: ");
+            client.setPostalCode(Integer.parseInt(scanner.nextLine()));
+            System.out.print("Please enter your city: ");
+            client.setCity(scanner.nextLine());
+            System.out.print("Please enter your phone number (+xxx xxx xxx xxxx): ");
+            client.setPhoneNumber(scanner.nextLine());
         }
-        return ads;
+        else if(command == Command.DELETECLIENT){
+            System.out.print("Please enter your password to delete your account: ");
+            client.setPassword(scanner.nextLine());
+        }
+
+        this.request.setClient(client);
+        try {
+            this.writer.writeObject(this.request);
+            response = (Response) this.reader.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.println(response.getMessage());
+        return response.isSucceeded();
     }
 
-    // Get an existing ad
-    public String getAd(){
-        String getAdRequest = Requests.GETAD.getStringValue();
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+    private void crudAd(Command command){
+        this.request = new Request();
+        this.request.setCommand(command);
+        Response response;
+        Ad ad = new Ad();
+
+        if(command == Command.ADDAD || command == Command.UPDATEAD){
+            if(command == Command.UPDATEAD){
+                System.out.print("Please enter the id of the Ad: ");
+                ad.setId(Integer.parseInt(scanner.nextLine()));
+            }
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Please the title of the Ad: ");
+            ad.setTitle(scanner.nextLine());
+            System.out.print("Please enter the description: ");
+            ad.setDescription(scanner.nextLine());
+            System.out.print("Please enter the price: ");
+            ad.setPrice(Float.parseFloat(scanner.nextLine()));
+            System.out.print("Please enter the id of the category: ");
+            ad.setCategory(new Category(Integer.parseInt(scanner.nextLine()), null));
+        }
+        else if(command == Command.DELETEAD || command == Command.RESERVEAD || command == Command.UNRESERVEAD){
+            System.out.print("Please enter the id of the Ad: ");
+            ad.setId(Integer.parseInt(scanner.nextLine()));
+        }
+
+        this.request.setAd(ad);
+        try {
+            this.writer.writeObject(this.request);
+            response = (Response) this.reader.readObject();
+            System.out.println(response.getMessage());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getAds(Command command){
+        this.request = new Request();
+        this.request.setCommand(command);
+        Response response;
+        ArrayList<Ad> ads = new ArrayList<>();
+
+        if(command == Command.GETADS){
+            System.out.print("Do you want to see your ads (yes|no): ");
+            String choice = scanner.nextLine();
+            this.request.setAreMine(choice.equals("yes"));
+
+        }
+
+        try {
+            this.writer.writeObject(request);
+            response = (Response) this.reader.readObject();
+            if(response.getAds() == null)
+                System.out.println(response.getMessage());
+            else
+                ads = response.getAds();
+                for(Ad ad: ads){
+                    System.out.println("Id: " + ad.getId());
+                    System.out.println("Title: " + ad.getTitle());
+                    System.out.println("Description: " + ad.getDescription());
+                    System.out.println("Price: " + ad.getPrice());
+                    System.out.println();
+                }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getAd(){
+        this.request = new Request();
+        this.request.setCommand(Command.GETAD);
+        Response response = new Response();
+        Ad ad = new Ad();
+
         System.out.print("Please enter the id of the Ad: ");
-        getAdRequest += "|" + scanner.nextLine();
+        ad.setId(Integer.parseInt(scanner.nextLine()));
 
-        this.writer.write(getAdRequest + "\n");
-        writer.flush();
-
-        String ad = "null";
+        this.request.setAd(ad);
         try {
-            String[] response = reader.readLine().split("\\|");
-
-            if(response.length > 1){
-                ad = "Id: " + response[0] + "\n";
-                ad += "Title: " + response[1] + "\n";
-                ad += "Description: " + response[2] + "\n";
-                ad += "Price: " + response[3] + "\n";
-                ad += "Category: " + response[4] + "\n";
-                ad += "Posted by: " + response[5] + "\n";
-                ad += "Posted in: " + response[6] + "\n";
-                ad += "Reserved: " + response[7] + "\n";
-            }
-        } catch (IOException exception) {
-            exception.printStackTrace();
+            this.writer.writeObject(this.request);
+            response = (Response) this.reader.readObject();
+            ad = response.getAd();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return ad;
+
+        if(ad != null){
+            System.out.println("Ad Id: " + ad.getId());
+            System.out.println("Title: " + ad.getTitle());
+            System.out.println("Description: " + ad.getDescription());
+            System.out.println("Price: " + ad.getPrice());
+            System.out.println("Category: " + ad.getCategory().getName());
+            System.out.println("Posted by: " + ad.getPostedBy().getId() + ", " + ad.getPostedBy().getFirstName() + " " + ad.getPostedBy().getLastName());
+            System.out.println("Posted at: " + ad.getPostingDate());
+            System.out.println("Reserved: " + ad.isReserved());
+        }
+        else{
+            System.out.println(response.getMessage());
+        }
     }
 
-    // Add a new ad
-    public int addAd()
-    {
-        int response = 0;
-        String addAdRequest = Requests.ADDAD.getStringValue();
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Please the title of the Ad:");
-        addAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter the description:");
-        addAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter the price:");
-        addAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter the id of the category:");
-        addAdRequest += "|" + scanner.nextLine();
-
-        this.writer.write(addAdRequest + "\n");
-        writer.flush();
+    private void getClientInfo(){
+        this.request = new Request();
+        this.request.setCommand(Command.GETCLIENTINFO);
+        Response response;
+        Client client = new Client();
 
         try {
-            response = Integer.parseInt(reader.readLine());
-        } catch (IOException exception) {
-            exception.printStackTrace();
+            this.writer.writeObject(this.request);
+            response = (Response) this.reader.readObject();
+            client = response.getClient();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return response;
-    }
 
-    // Update an existing update
-    public boolean updateAd(){
-        String updateAdRequest = Requests.UPDATEAD.getStringValue();
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter the id of the Ad");
-        updateAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please the title of the Ad:");
-        updateAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter the description:");
-        updateAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter the price:");
-        updateAdRequest += "|" + scanner.nextLine();
-        System.out.print("Please enter the id of the category:");
-        updateAdRequest += "|" + scanner.nextLine();
-
-        this.writer.write(updateAdRequest + "\n");
-        writer.flush();
-
-        try {
-            if(reader.readLine().equals("success"))
-                return true;
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return false;
-    }
-
-    // Delete an existing add
-    public boolean deleteAd(){
-        String deleteAdRequest = Requests.DELETEAD.getStringValue();
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter the id of the Ad");
-        deleteAdRequest += "|" + scanner.nextLine();
-
-        this.writer.write(deleteAdRequest + "\n");
-        writer.flush();
-
-        try {
-            if(reader.readLine().equals("success"))
-                return true;
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return false;
-    }
-
-    // Get all reserved adds
-    public String getReservedAds(){
-        String getReservedAdsRequest = Requests.GETRESERVEDADS.getStringValue();
-        Client.clearScreen();
-        this.writer.write(getReservedAdsRequest + "\n");
-        this.writer.flush();
-
-        String ads = null;
-        try {
-            String[] response = reader.readLine().split("\\|");
-            StringBuilder adsBuilder = new StringBuilder();
-            if(response.length > 1){
-                for(int i = 0; i < response.length; i += 4){
-                    adsBuilder.append("Id: ").append(response[i]).append("\n");
-                    adsBuilder.append("Title: ").append(response[i+1]).append("\n");
-                    adsBuilder.append("Description: ").append(response[i+2]).append("\n");
-                    adsBuilder.append("Price: ").append(response[i+3]).append("\n");
-                }
-                ads = adsBuilder.toString();
-            }
-            else{
-                ads = response[0];
-            }
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return ads;
-    }
-
-    // Reserve or un reserve an ad
-    public boolean resUnresAd(boolean reserve){
-        String resUnresAdRequest;
-        if(reserve)
-            resUnresAdRequest = Requests.RESERVEAD.getStringValue();
-        else
-            resUnresAdRequest = Requests.UNRESERVEAD.getStringValue();
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter the id of the Ad");
-        resUnresAdRequest += "|" + scanner.nextLine();
-
-        this.writer.write(resUnresAdRequest + "\n");
-        writer.flush();
-
-        try {
-            if(reader.readLine().equals("success"))
-                return true;
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return false;
-    }
-
-    // Get an existing clients info
-    public String getClientInfo(){
-        String clientInfo = "null";
-        String infoClientRequest = Requests.GETCLIENTINFO.getStringValue();
-        this.writer.write(infoClientRequest + "\n");
-        this.writer.flush();
-        try {
-            String[] response = this.reader.readLine().split("\\|");
-            if(response.length > 1){
-                clientInfo = "First Name: " + response[0] + "\n";
-                clientInfo += "Last Name: " + response[1] + "\n";
-                clientInfo += "Birthday: " + response[2] + "\n";
-                clientInfo += "Email: " + response[3] + "\n";
-                clientInfo += "Address: " + response[4] + "\n";
-                clientInfo += "Postal Code: " + response[5] + "\n";
-                clientInfo += "City: " + response[6] + "\n";
-                clientInfo += "Phone Number: " + response[7] + "\n";
-            }
-            else if(response.length == 1){
-                clientInfo = response[0];
-            }
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return clientInfo;
-    }
-
-    // Update an existing client
-    public boolean updateClient()
-    {
-        String updateClient = Requests.UPDATECLIENT.getStringValue();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("If you don't want to change any field just right next");
-        System.out.print("Please enter your new first name: ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter your last name: ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter your birthday (yyyy-MM-dd): ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter your email: ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter the old password you can't use next here: ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter the new password if you want: ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter your address: ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter your postal code: ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter your city: ");
-        updateClient += "|" + scanner.nextLine();
-        System.out.print("Please enter your phone number (+xxx xxx xxx xxxx): ");
-        updateClient += "|" + scanner.nextLine();
-        updateClient += "|" + clientId;
-
-        this.writer.write(updateClient + "\n");
-        this.writer.flush();
-
-        try {
-            if(reader.readLine().equals("success"))
-                return true;
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return false;
-    }
-
-    // Delete an existing client
-    public boolean deleteClient(){
-        String deleteClientRequest = Requests.DELETECLIENT.getStringValue();
-        Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter your password to delete your account");
-        deleteClientRequest += "|" + scanner.nextLine();
-        deleteClientRequest += "|" + clientId;
-
-        this.writer.write(deleteClientRequest + "\n");
-        writer.flush();
-
-        try {
-            if(reader.readLine().equals("success"))
-                return true;
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return false;
-    }
-
-    // Read messages from the server
-    public void readMessages(){
-
-        String message;
-
-        // Print messages
-        try{
-            while((message = reader.readLine()) != null){
-                if(message.length() == 0)
-                    break;
-                System.out.println(message);
-            }
-        } catch (IOException exception){
-            exception.printStackTrace();
-        }
+        System.out.println("First Name: " + client.getFirstName());
+        System.out.println("Last Name: " + client.getLastName());
+        System.out.println("Birthday: " + client.getBirthdate().toString());
+        System.out.println("Email: " + client.getEmail());
+        System.out.println("Address: " + client.getAddress());
+        System.out.println("Postal Code: " + client.getPostalCode());
+        System.out.println("City: " + client.getCity());
+        System.out.println("Phone Number: " + client.getPhoneNumber());
     }
 }
