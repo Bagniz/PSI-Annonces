@@ -10,6 +10,7 @@ public enum Requests {
     GETCLIENTINFO("GETCLIENTINFO", "Get your personnel information"),
     UPDATECLIENT("UPDATECLIENT","Update your personnel information"),
     DELETECLIENT("DELETECLIENT","Delete your account"),
+    CHAT("CHAT", "Chat with an ad poster"),
     LOGOUT("LOGOUT", "Log out");
 
     private final String stringValue;

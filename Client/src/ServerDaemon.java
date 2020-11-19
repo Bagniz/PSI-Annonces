@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class ServerDaemon {
 
     // Attributes
+    private Scanner scanner;
     private BufferedReader reader;
     private PrintWriter writer;
     private int clientId;
@@ -18,6 +19,7 @@ public class ServerDaemon {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.scanner = new Scanner(System.in);
     }
 
     // Authenticate a client
@@ -61,7 +63,7 @@ public class ServerDaemon {
         int response = 0;
 
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
 
         System.out.print("Please enter your email: ");
         logInRequest += "|" + scanner.nextLine();
@@ -86,7 +88,7 @@ public class ServerDaemon {
         int response = 0;
 
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.print("Please enter your first name: ");
         signUpRequest += "|" + scanner.nextLine();
         System.out.print("Please enter your last name: ");
@@ -130,7 +132,7 @@ public class ServerDaemon {
 
         do{
             System.out.print("Please enter a valid operation: ");
-            Scanner scanner = new Scanner(System.in);
+            scanner = new Scanner(System.in);
             try{
                 operationIndex = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e){
@@ -236,6 +238,13 @@ public class ServerDaemon {
                 break;
             }
 
+            case CHAT:{
+                if(!chat()){
+                    System.out.println("Erreur while connection to the owner");
+                }
+                break;
+            }
+
             default:{
                 System.out.println("Your choice doesn't exist");
                 break;
@@ -244,11 +253,49 @@ public class ServerDaemon {
         return true;
     }
 
+    // Chat
+    private boolean chat(){
+        String chatClientRequest = Requests.CHAT.getStringValue();
+        Client.clearScreen();
+        scanner = new Scanner(System.in);
+        System.out.print("Please enter the id of the ad: ");
+        chatClientRequest += "|" + scanner.nextLine();
+        this.writer.write(chatClientRequest + "\n");
+        this.writer.flush();
+
+        try {
+            String[] response = reader.readLine().split("\\|");
+            if(response.length > 1){
+                Socket socket = new Socket(response[0], Integer.parseInt(response[1]));
+                ChatReceiver chatReceiver = new ChatReceiver(socket);
+                ChatSender chatSender;
+                String getClient = Requests.GETCLIENTINFO.getStringValue() + "|" + clientId;
+                this.writer.write(getClient + "\n");
+                this.writer.flush();
+                response = reader.readLine().split("\\|");
+                if(response.length > 1){
+                    chatSender = new ChatSender(socket, clientId, response[1]);
+                    chatReceiver.start();
+                    chatSender.start();
+                }
+                else{
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return true;
+    }
+
     // Get existing adds
     private String getAds() {
         String getAdsRequest = Requests.GETADS.getStringValue();
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.print("Do you want to see your ads (yes|no): ");
         if(scanner.nextLine().equals("yes"))
             getAdsRequest += "|" + true;
@@ -284,7 +331,7 @@ public class ServerDaemon {
     public String getAd(){
         String getAdRequest = Requests.GETAD.getStringValue();
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.print("Please enter the id of the Ad: ");
         getAdRequest += "|" + scanner.nextLine();
 
@@ -312,12 +359,11 @@ public class ServerDaemon {
     }
 
     // Add a new ad
-    public int addAd()
-    {
+    public int addAd() {
         int response = 0;
         String addAdRequest = Requests.ADDAD.getStringValue();
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.print("Please the title of the Ad:");
         addAdRequest += "|" + scanner.nextLine();
         System.out.print("Please enter the description:");
@@ -342,7 +388,7 @@ public class ServerDaemon {
     public boolean updateAd(){
         String updateAdRequest = Requests.UPDATEAD.getStringValue();
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.println("Please enter the id of the Ad");
         updateAdRequest += "|" + scanner.nextLine();
         System.out.print("Please the title of the Ad:");
@@ -370,7 +416,7 @@ public class ServerDaemon {
     public boolean deleteAd(){
         String deleteAdRequest = Requests.DELETEAD.getStringValue();
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.println("Please enter the id of the Ad");
         deleteAdRequest += "|" + scanner.nextLine();
 
@@ -423,7 +469,7 @@ public class ServerDaemon {
         else
             resUnresAdRequest = Requests.UNRESERVEAD.getStringValue();
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.println("Please enter the id of the Ad");
         resUnresAdRequest += "|" + scanner.nextLine();
 
@@ -467,10 +513,9 @@ public class ServerDaemon {
     }
 
     // Update an existing client
-    public boolean updateClient()
-    {
+    public boolean updateClient() {
         String updateClient = Requests.UPDATECLIENT.getStringValue();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.println("If you don't want to change any field just right next");
         System.out.print("Please enter your new first name: ");
         updateClient += "|" + scanner.nextLine();
@@ -510,7 +555,7 @@ public class ServerDaemon {
     public boolean deleteClient(){
         String deleteClientRequest = Requests.DELETECLIENT.getStringValue();
         Client.clearScreen();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.println("Please enter your password to delete your account");
         deleteClientRequest += "|" + scanner.nextLine();
         deleteClientRequest += "|" + clientId;

@@ -1,4 +1,5 @@
 public enum Requests {
+    CHAT("CHAT", "Chat with an ad poster"),
     SIGNUP("SIGNUP", "Sign up a new client"),
     LOGIN("LOGIN", "Log in an existing client"),
     GETADS("GETADS", "Get available ads"),
