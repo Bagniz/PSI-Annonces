@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class ClientHandler extends Thread{
 
     // Attributes
-    private ArrayList<ClientHandler> clients;
+    private final ArrayList<ClientHandler> clients;
     private final Socket clientConnection;
     private final Database database;
     private OutputStreamWriter writer;
@@ -251,7 +251,7 @@ public class ClientHandler extends Thread{
                                 int id = Integer.parseInt(ad.split("\\|")[5]);
                                 for(ClientHandler clientHandler: clients){
                                     if(id == clientHandler.getClientId()){
-                                        this.writer.write( clientHandler.getClientConnection().getLocalAddress().getHostAddress() + "|" + clientHandler.getClientConnection().getPort() + "\n");
+                                        this.writer.write( clientHandler.getClientConnection().getLocalAddress().getHostAddress() + "|" + clientHandler.getClientConnection().getPort() + "|" + id + "\n");
                                     }
                                 }
                             }

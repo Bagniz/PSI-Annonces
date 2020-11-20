@@ -5,12 +5,12 @@ import java.awt.event.KeyEvent;
 
 public class MyJFrame extends JFrame {
 
-    private TextArea textAreaConsole;
-    private TextArea writeAreaConsole;
-    private TextArea textAreaChat;
-    private TextArea writeAreaChat;
-    private boolean readFromConsole = false;
-    private boolean readFromChat = false;
+    private final TextArea textAreaConsole;
+    private final TextArea writeAreaConsole;
+    private final TextArea textAreaChat;
+    private final TextArea writeAreaChat;
+    private volatile boolean readFromConsole = false;
+    private volatile boolean readFromChat = false;
 
     public MyJFrame()
     {
@@ -32,7 +32,7 @@ public class MyJFrame extends JFrame {
 
         writeAreaConsole.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void keyReleased(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
                     readFromConsole = true;
                 }
@@ -71,40 +71,30 @@ public class MyJFrame extends JFrame {
         mainPanel.add(chatPanel);
         super.add(mainPanel);
     }
-    public void printConsole(String string)
-    {
-        this.textAreaConsole.setText(this.textAreaConsole.getText().toString()+"\n"+string);
-
+    public void printToConsole(String string) {
+        this.textAreaConsole.setText(this.textAreaConsole.getText() + "\n" + string);
     }
 
-    public void printChat(String string)
-    {
-        this.textAreaChat.setText(this.textAreaChat.getText().toString()+"\n"+string);
-
+    public void printToChat(String string) {
+        this.textAreaChat.setText(this.textAreaChat.getText() + "\n" + string);
     }
 
-    public String readConsole()
-    {
-        while (this.readFromConsole!=true){
-            System.out.println();
-        }
+    public String readFromConsole() {
+        while (!this.readFromConsole);
         this.readFromConsole= false;
         String string = this.writeAreaConsole.getText();
         this.writeAreaConsole.setText("");
         string = string.replace("\n","");
-        printConsole(string);
+        printToConsole(string);
         return string;
     }
-    public String readChat()
-    {
-        while (this.readFromChat!=true){
-            System.out.println();
-        }
+    public String readFromChat() {
+        while (!this.readFromChat);
         this.readFromChat = false;
         String string = this.writeAreaChat.getText();
         string = string.replace("\n","");
         this.writeAreaChat.setText("");
-        printChat(string);
+        printToChat(string);
         return string;
     }
 

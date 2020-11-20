@@ -2,28 +2,30 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerDaemon extends Thread{
 
     // Attributes
-    private Scanner scanner;
     private BufferedReader reader;
     private PrintWriter writer;
     private int clientId;
-    private MyJFrame frame;
+    private final MyJFrame frame;
+    private ChatReceiver chatReceiver;
+    private AtomicBoolean isSender;
 
     @Override
     public void run() {
         // Authenticate to the server
         if(this.authenticate()) {
-            frame.printConsole("Hello there, what do you want to do (Number): ");
+            frame.printToConsole("Hello there, what do you want to do (Number): ");
             while(true){
                 if(!this.chooseAction())
                     break;
             }
         }
         else {
-            frame.printConsole("Sad to see you go :(");
+            frame.printToConsole("Sad to see you go :(");
         }
     }
 
@@ -42,34 +44,37 @@ public class ServerDaemon extends Thread{
     // Authenticate a client
     public boolean authenticate(){
         // Variables
-        Scanner reader;
         String choice;
 
         this.readMessages();
 
         // Get the users input
         do {
-            frame.printConsole("Please enter a valid operation (1/2): ");
-            choice = frame.readConsole();
+            frame.printToConsole("Please enter a valid operation (1/2): ");
+            choice = frame.readFromConsole();
         } while (!choice.equals("1") && !choice.equals("2"));
 
         // LogIn or SignUp
         if(choice.equals("1")){
             if((clientId = this.logIn()) <= 0) {
-                frame.printConsole("LogIn failed");
+                frame.printToConsole("LogIn failed");
                 return false;
             }
         }
         else {
             if((clientId = this.signUp()) <= 0) {
-                frame.printConsole("SignUp failed");
+                frame.printToConsole("SignUp failed");
                 return false;
             }
             else {
-                frame.printConsole("SignUp succeeded");
+                frame.printToConsole("SignUp succeeded");
             }
         }
 
+        String[] clientInfo = this.getClientInfo().split("\n");
+        this.isSender = new AtomicBoolean(false);
+        chatReceiver = new ChatReceiver(frame, clientId, clientInfo[1].split(":")[1], isSender);
+        chatReceiver.start();
         return true;
     }
 
@@ -81,10 +86,10 @@ public class ServerDaemon extends Thread{
         Client.clearScreen();
         
 
-        frame.printConsole("Please enter your email: ");
-        logInRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your password: ");
-        logInRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please enter your email: ");
+        logInRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your password: ");
+        logInRequest += "|" + frame.readFromConsole();
 
         this.writer.write(logInRequest + "\n");
         writer.flush();
@@ -105,24 +110,24 @@ public class ServerDaemon extends Thread{
 
         Client.clearScreen();
         
-        frame.printConsole("Please enter your first name: ");
-        signUpRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your last name: ");
-        signUpRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your birthday (yyyy-MM-dd): ");
-        signUpRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your email: ");
-        signUpRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your password: ");
-        signUpRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your address: ");
-        signUpRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your postal code: ");
-        signUpRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your city: ");
-        signUpRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter your phone number (+xxx xxx xxx xxxx): ");
-        signUpRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please enter your first name: ");
+        signUpRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your last name: ");
+        signUpRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your birthday (yyyy-MM-dd): ");
+        signUpRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your email: ");
+        signUpRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your password: ");
+        signUpRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your address: ");
+        signUpRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your postal code: ");
+        signUpRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your city: ");
+        signUpRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your phone number (+xxx xxx xxx xxxx): ");
+        signUpRequest += "|" + frame.readFromConsole();
 
         this.writer.write(signUpRequest + "\n");
         writer.flush();
@@ -142,15 +147,15 @@ public class ServerDaemon extends Thread{
         int operationIndex = 1;
         Client.clearScreen();
         for(Requests requests : requestsTab) {
-            frame.printConsole(operationIndex + " - " + requests.getInformation());
+            frame.printToConsole(operationIndex + " - " + requests.getInformation());
             operationIndex++;
         }
 
         do{
-            frame.printConsole("Please enter a valid operation: ");
+            frame.printToConsole("Please enter a valid operation: ");
             
             try{
-                operationIndex = Integer.parseInt(frame.readConsole());
+                operationIndex = Integer.parseInt(frame.readFromConsole());
             } catch (NumberFormatException e){
                 operationIndex = -1;
             }
@@ -160,109 +165,110 @@ public class ServerDaemon extends Thread{
         {
             case GETADS:{
                 String ads = this.getAds();
-                frame.printConsole(Objects.requireNonNullElse(ads, "Operation failed"));
+                frame.printToConsole(Objects.requireNonNullElse(ads, "Operation failed"));
                 break;
             }
 
             case GETAD:{
                 String ad = this.getAd();
                 if(ad.equals("null"))
-                    frame.printConsole("There is no ad that matches the given id");
+                    frame.printToConsole("There is no ad that matches the given id");
                 else
-                    frame.printConsole(ad);
+                    frame.printToConsole(ad);
                 break;
             }
 
             case ADDAD:{
                 if (this.addAd() <= 0)
-                    frame.printConsole("the ad could not be published");
+                    frame.printToConsole("the ad could not be published");
                 else
-                    frame.printConsole("the ad is published");
+                    frame.printToConsole("the ad is published");
                 break;
             }
 
             case UPDATEAD:{
                 if(this.updateAd())
-                    frame.printConsole("Ad updated");
+                    frame.printToConsole("Ad updated");
                 else
-                    frame.printConsole("Ad update failed");
+                    frame.printToConsole("Ad update failed");
                 break;
             }
 
             case DELETEAD:{
                 if(this.deleteAd())
-                    frame.printConsole("Ad deleted");
+                    frame.printToConsole("Ad deleted");
                 else
-                    frame.printConsole("Ad deletion failed");
+                    frame.printToConsole("Ad deletion failed");
                 break;
             }
 
             case GETRESERVEDADS:{
                 String ads = this.getReservedAds();
-                frame.printConsole(Objects.requireNonNullElse(ads, "Operation failed"));
+                frame.printToConsole(Objects.requireNonNullElse(ads, "Operation failed"));
                 break;
             }
 
             case RESERVEAD:{
                 if(this.resUnresAd(true))
-                    frame.printConsole("The ad has been reserved");
+                    frame.printToConsole("The ad has been reserved");
                 else
-                    frame.printConsole("Reservation operation failed");
+                    frame.printToConsole("Reservation operation failed");
                 break;
             }
 
             case UNRESERVEAD:{
                 if(this.resUnresAd(false))
-                    frame.printConsole("The ad has been unreserved");
+                    frame.printToConsole("The ad has been unreserved");
                 else
-                    frame.printConsole("Unresevation operation failed");
+                    frame.printToConsole("Unresevation operation failed");
                 break;
             }
 
             case LOGOUT:{
-                frame.printConsole("Logged Out");
-                frame.printConsole("Sad to see you go :(");
+                this.chatReceiver.stop();
+                frame.printToConsole("Logged Out");
+                frame.printToConsole("Sad to see you go :(");
                 return false;
             }
 
             case GETCLIENTINFO:{
                 String clientInfo = this.getClientInfo();
                 if(clientInfo.equals("null")){
-                    frame.printConsole("Operation failed");
+                    frame.printToConsole("Operation failed");
                 }
                 else{
-                    frame.printConsole(clientInfo);
+                    frame.printToConsole(clientInfo);
                 }
                 break;
             }
 
             case UPDATECLIENT:{
                 if(this.updateClient())
-                    frame.printConsole("Client updated");
+                    frame.printToConsole("Client updated");
                 else
-                    frame.printConsole("Client update failed");
+                    frame.printToConsole("Client update failed");
                 break;
             }
 
             case DELETECLIENT:{
                 if(this.deleteClient()){
-                    frame.printConsole("Client account is deleted");
+                    frame.printToConsole("Client account is deleted");
                     return false;
                 }
                 else
-                    frame.printConsole("Client account deletion failed");
+                    frame.printToConsole("Client account deletion failed");
                 break;
             }
 
             case CHAT:{
                 if(!chat()){
-                    frame.printConsole("Erreur while connection to the owner");
+                    frame.printToConsole("Erreur while connection to the owner");
                 }
                 break;
             }
 
             default:{
-                frame.printConsole("Your choice doesn't exist");
+                frame.printToConsole("Your choice doesn't exist");
                 break;
             }
         }
@@ -273,25 +279,22 @@ public class ServerDaemon extends Thread{
     private boolean chat(){
         String chatClientRequest = Requests.CHAT.getStringValue();
         Client.clearScreen();
-        
-        frame.printConsole("Please enter the id of the ad: ");
-        chatClientRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please enter the id of the ad: ");
+        chatClientRequest += "|" + frame.readFromConsole();
         this.writer.write(chatClientRequest + "\n");
         this.writer.flush();
 
         try {
             String[] response = reader.readLine().split("\\|");
             if(response.length > 1){
-                Socket socket = new Socket(response[0], Integer.parseInt(response[1]));
-                ChatReceiver chatReceiver = new ChatReceiver(socket);
-                ChatSender chatSender;
+                Socket socket = new Socket(response[0], 6060 + Integer.parseInt(response[2]));
                 String getClient = Requests.GETCLIENTINFO.getStringValue() + "|" + clientId;
                 this.writer.write(getClient + "\n");
                 this.writer.flush();
                 response = reader.readLine().split("\\|");
                 if(response.length > 1){
-                    chatSender = new ChatSender(socket, clientId, response[1]);
-                    chatReceiver.start();
+                    isSender.set(true);
+                    ChatSender chatSender = new ChatSender(socket, clientId, response[1], frame, isSender);
                     chatSender.start();
                 }
                 else{
@@ -312,8 +315,8 @@ public class ServerDaemon extends Thread{
         String getAdsRequest = Requests.GETADS.getStringValue();
         Client.clearScreen();
         
-        frame.printConsole("Do you want to see your ads (yes|no): ");
-        if(frame.readConsole().equals("yes"))
+        frame.printToConsole("Do you want to see your ads (yes|no): ");
+        if(frame.readFromConsole().equals("yes"))
             getAdsRequest += "|" + true;
         else
             getAdsRequest += "|" + false;
@@ -348,8 +351,8 @@ public class ServerDaemon extends Thread{
         String getAdRequest = Requests.GETAD.getStringValue();
         Client.clearScreen();
         
-        frame.printConsole("Please enter the id of the Ad: ");
-        getAdRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please enter the id of the Ad: ");
+        getAdRequest += "|" + frame.readFromConsole();
 
         this.writer.write(getAdRequest + "\n");
         writer.flush();
@@ -380,14 +383,14 @@ public class ServerDaemon extends Thread{
         String addAdRequest = Requests.ADDAD.getStringValue();
         Client.clearScreen();
         
-        frame.printConsole("Please the title of the Ad:");
-        addAdRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter the description:");
-        addAdRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter the price:");
-        addAdRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter the id of the category:");
-        addAdRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please the title of the Ad:");
+        addAdRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter the description:");
+        addAdRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter the price:");
+        addAdRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter the id of the category:");
+        addAdRequest += "|" + frame.readFromConsole();
 
         this.writer.write(addAdRequest + "\n");
         writer.flush();
@@ -405,16 +408,16 @@ public class ServerDaemon extends Thread{
         String updateAdRequest = Requests.UPDATEAD.getStringValue();
         Client.clearScreen();
         
-        frame.printConsole("Please enter the id of the Ad");
-        updateAdRequest += "|" + frame.readConsole();
-        frame.printConsole("Please the title of the Ad:");
-        updateAdRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter the description:");
-        updateAdRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter the price:");
-        updateAdRequest += "|" + frame.readConsole();
-        frame.printConsole("Please enter the id of the category:");
-        updateAdRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please enter the id of the Ad");
+        updateAdRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please the title of the Ad:");
+        updateAdRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter the description:");
+        updateAdRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter the price:");
+        updateAdRequest += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter the id of the category:");
+        updateAdRequest += "|" + frame.readFromConsole();
 
         this.writer.write(updateAdRequest + "\n");
         writer.flush();
@@ -433,8 +436,8 @@ public class ServerDaemon extends Thread{
         String deleteAdRequest = Requests.DELETEAD.getStringValue();
         Client.clearScreen();
         
-        frame.printConsole("Please enter the id of the Ad");
-        deleteAdRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please enter the id of the Ad");
+        deleteAdRequest += "|" + frame.readFromConsole();
 
         this.writer.write(deleteAdRequest + "\n");
         writer.flush();
@@ -486,8 +489,8 @@ public class ServerDaemon extends Thread{
             resUnresAdRequest = Requests.UNRESERVEAD.getStringValue();
         Client.clearScreen();
         
-        frame.printConsole("Please enter the id of the Ad");
-        resUnresAdRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please enter the id of the Ad");
+        resUnresAdRequest += "|" + frame.readFromConsole();
 
         this.writer.write(resUnresAdRequest + "\n");
         writer.flush();
@@ -532,27 +535,27 @@ public class ServerDaemon extends Thread{
     public boolean updateClient() {
         String updateClient = Requests.UPDATECLIENT.getStringValue();
         
-        frame.printConsole("If you don't want to change any field just right next");
-        frame.printConsole("Please enter your new first name: ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter your last name: ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter your birthday (yyyy-MM-dd): ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter your email: ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter the old password you can't use next here: ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter the new password if you want: ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter your address: ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter your postal code: ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter your city: ");
-        updateClient += "|" + frame.readConsole();
-        frame.printConsole("Please enter your phone number (+xxx xxx xxx xxxx): ");
-        updateClient += "|" + frame.readConsole();
+        frame.printToConsole("If you don't want to change any field just right next");
+        frame.printToConsole("Please enter your new first name: ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your last name: ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your birthday (yyyy-MM-dd): ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your email: ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter the old password you can't use next here: ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter the new password if you want: ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your address: ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your postal code: ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your city: ");
+        updateClient += "|" + frame.readFromConsole();
+        frame.printToConsole("Please enter your phone number (+xxx xxx xxx xxxx): ");
+        updateClient += "|" + frame.readFromConsole();
         updateClient += "|" + clientId;
 
         this.writer.write(updateClient + "\n");
@@ -572,8 +575,8 @@ public class ServerDaemon extends Thread{
         String deleteClientRequest = Requests.DELETECLIENT.getStringValue();
         Client.clearScreen();
         
-        frame.printConsole("Please enter your password to delete your account");
-        deleteClientRequest += "|" + frame.readConsole();
+        frame.printToConsole("Please enter your password to delete your account");
+        deleteClientRequest += "|" + frame.readFromConsole();
         deleteClientRequest += "|" + clientId;
 
         this.writer.write(deleteClientRequest + "\n");
@@ -598,7 +601,7 @@ public class ServerDaemon extends Thread{
             while((message = reader.readLine()) != null){
                 if(message.length() == 0)
                     break;
-                frame.printConsole(message);
+                frame.printToConsole(message);
             }
         } catch (IOException exception){
             exception.printStackTrace();

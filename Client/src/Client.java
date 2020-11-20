@@ -43,7 +43,6 @@ public class Client {
             // Create a daemon to connected to the server
             ServerDaemon serverDaemon = new ServerDaemon(serverConnectionSocket,jFrame);
             serverDaemon.start();
-
         }
     }
 }
