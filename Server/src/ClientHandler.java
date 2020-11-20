@@ -3,10 +3,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientHandler extends Thread{
 
     // Attributes
+    private final ArrayList<ClientHandler> clients;
     private final Socket clientConnection;
     private final Database database;
     private OutputStreamWriter writer;
@@ -15,7 +17,7 @@ public class ClientHandler extends Thread{
     private int clientId;
 
     // Constructor
-    public ClientHandler(Socket clientConnection, Database database)
+    public ClientHandler(Socket clientConnection, Database database, ArrayList<ClientHandler> clients)
     {
         this.clientConnection = clientConnection;
         this.database = database;
@@ -26,6 +28,7 @@ public class ClientHandler extends Thread{
         } catch (IOException e) {
             System.out.println("Could not get client input/output stream");
         }
+        this.clients = clients;
     }
 
     public Socket getClientConnection(){
@@ -240,6 +243,22 @@ public class ClientHandler extends Thread{
                             break;
                         }
 
+                        case CHAT:{
+                            String ad;
+                            if((ad = database.getAnAd(Integer.parseInt(requestTab[1]))).equals("null"))
+                                this.writer.write("error\n");
+                            else{
+                                int id = Integer.parseInt(ad.split("\\|")[5]);
+                                for(ClientHandler clientHandler: clients){
+                                    if(id == clientHandler.getClientId()){
+                                        this.writer.write( clientHandler.getClientConnection().getLocalAddress().getHostAddress() + "|" + clientHandler.getClientConnection().getPort() + "|" + id + "\n");
+                                    }
+                                }
+                            }
+                            this.writer.flush();
+                            break;
+                        }
+
                         default:{
                             int response = -1;
                             this.writer.write(response + "\n");
@@ -252,5 +271,9 @@ public class ClientHandler extends Thread{
                 System.out.println("Could not send response to client");
             }
         }
+    }
+
+    public int getClientId() {
+        return clientId;
     }
 }

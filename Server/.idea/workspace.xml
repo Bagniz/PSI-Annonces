@@ -19,17 +19,17 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1f780ad1-27fc-4f01-99d1-a810207306fc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Server/.idea/artifacts/Server_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Server/.idea/libraries/postgresql_42_2_18.xml" afterDir="false" />
+    <list default="true" id="56345d51-0fe9-47c5-bad7-89e2b14289e3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../Client/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/Server_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/postgresql_42_2_18.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/META-INF/MANIFEST.MF" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/src/META-INF/MANIFEST.MF" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +52,7 @@
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
   </component>
-  <component name="ProjectId" id="1kZVpPn2nkK12Ci6bdEFtOhvYqu" />
+  <component name="ProjectId" id="1kZVhGY090UrswXFZZFpXtbM5tk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -62,15 +62,16 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../tools/JDBC Postgres/postgresql-42.2.18.jar" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RunManager">
-    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Client" />
-      <module name="Client" />
+    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Server" />
+      <module name="Server" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -88,19 +89,19 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Client" />
+        <item itemvalue="Application.Server" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="1f780ad1-27fc-4f01-99d1-a810207306fc" name="Default Changelist" comment="" />
-      <created>1605908282853</created>
+      <changelist id="56345d51-0fe9-47c5-bad7-89e2b14289e3" name="Default Changelist" comment="" />
+      <created>1605908220478</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1605908282853</updated>
-      <workItem from="1605908286018" duration="384000" />
+      <updated>1605908220478</updated>
+      <workItem from="1605908224079" duration="443000" />
     </task>
     <servers />
   </component>
@@ -119,13 +120,17 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="438" y="114" width="1024" height="839" key="#Project_Structure" timestamp="1605908667180">
+    <state x="443" y="116" width="1024" height="839" key="#Project_Structure" timestamp="1605908584215">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="438" y="114" width="1024" height="839" key="#Project_Structure/0.0.1920.1080@0.0.1920.1080" timestamp="1605908667180" />
-    <state x="682" y="327" width="525" height="408" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1605908656049">
+    <state x="443" y="116" width="1024" height="839" key="#Project_Structure/0.0.1920.1080@0.0.1920.1080" timestamp="1605908584215" />
+    <state x="682" y="326" width="525" height="408" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1605908409277">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="682" y="327" width="525" height="408" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1605908656049" />
+    <state x="682" y="326" width="525" height="408" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1605908409277" />
+    <state x="631" y="280" width="637" height="505" key="FileChooserDialogImpl" timestamp="1605908579699">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="631" y="280" width="637" height="505" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1605908579699" />
   </component>
 </project>

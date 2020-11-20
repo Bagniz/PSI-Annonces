@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -35,21 +36,13 @@ public class Client {
                     break;
                 } catch (IOException  ignore) {}
             }
-
+            MyJFrame jFrame = new MyJFrame();
+            jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            jFrame.pack();
+            jFrame.setVisible(true);
             // Create a daemon to connected to the server
-            ServerDaemon serverDaemon = new ServerDaemon(serverConnectionSocket);
-
-            // Authenticate to the server
-            if(serverDaemon.authenticate()) {
-                System.out.print("Hello there, what do you want to do (Number): ");
-                while(true){
-                    if(!serverDaemon.chooseAction())
-                        break;
-                }
-            }
-            else {
-                System.out.println("Sad to see you go :(");
-            }
+            ServerDaemon serverDaemon = new ServerDaemon(serverConnectionSocket,jFrame);
+            serverDaemon.start();
         }
     }
 }

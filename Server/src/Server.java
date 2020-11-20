@@ -28,7 +28,7 @@ public class Server {
             while (true) {
                 // Wait for new clients
                 Socket clientConnection = serverSocket.accept();
-                clients.add(new ClientHandler(clientConnection, database));
+                clients.add(new ClientHandler(clientConnection, database, clients));
                 clients.get(clients.size() - 1).start();
             }
         } catch (IOException e) {
